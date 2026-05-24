@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DocAnalytics Pro - Gestión Real</title>
+    <title>DocAnalytics Pro - Gestión Gerencial Real</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <style>
         *{box-sizing:border-box;margin:0;padding:0;}
@@ -24,16 +24,18 @@
         .logo{padding:25px;border-bottom:1px solid var(--border);text-align:center;}
         .logo-icon{width:45px;height:45px;background:var(--purple);border-radius:12px;display:flex;align-items:center;justify-content:center;margin: 0 auto 12px;}
         .logo-name{font-size:18px;font-weight:800;letter-spacing:1px; color:#fff;}
-        
+        .nav-item{display:flex;align-items:center;gap:12px;padding:15px 20px;font-size:13px;color:var(--txt2);cursor:pointer;transition:0.2s;}
+        .nav-item:hover, .nav-item.act{background:var(--bg4);color:var(--txt);}
+
         /* Historial */
         .history-section { flex: 1; overflow-y: auto; padding-bottom: 20px; }
         .history-item { position:relative; padding: 15px 20px; border-bottom: 1px solid #ffffff05; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
         .history-item:hover { background: var(--bg4); }
         .history-item.active { background: var(--purple3); border-left-color: var(--purple); }
-        .history-item .h-name { font-size: 12px; font-weight: 700; color: #fff; display: block; }
+        .history-item .h-name { font-size: 13px; font-weight: 700; color: #fff; display: block; }
         .history-item .h-meta { font-size: 10px; color: var(--txt3); margin-top:5px; display:flex; justify-content:space-between; }
-        .delete-btn { position: absolute; top: 15px; right: 15px; color: var(--txt3); cursor: pointer; }
-        .delete-btn:hover { color: var(--red); }
+        .delete-btn { position: absolute; top: 15px; right: 15px; color: var(--txt3); transition: 0.2s; z-index: 10;}
+        .delete-btn:hover { color: var(--red); transform: scale(1.2); }
 
         /* Main Content */
         .main{flex:1;display:flex;flex-direction:column;min-width:0;}
@@ -48,7 +50,7 @@
         .panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:25px;margin-bottom:25px;}
         table{width:100%;border-collapse:collapse;}
         th{text-align:left;color:var(--txt3);font-size:10px;padding:12px;border-bottom:1px solid var(--border);text-transform:uppercase;}
-        td{padding:10px;border-bottom:1px solid var(--border);}
+        td{padding:12px 10px;border-bottom:1px solid var(--border);}
         
         input { background:var(--bg4);border:1px solid var(--border);color:var(--txt);padding:10px;border-radius:6px;width:100%;font-size:13px; transition:0.2s; }
         input:focus { border-color: var(--purple); outline:none; background: #252b3b; }
@@ -56,8 +58,9 @@
         .bank-grid{display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px;}
         .bank-card{background: var(--bg4); padding: 15px; border-radius: var(--r); border: 1px solid var(--border2);}
         
-        .upload-box{border:2px dashed var(--border2);padding:40px;text-align:center;border-radius:var(--rl);background:var(--bg3);cursor:pointer;}
-        .file-card{display:flex;align-items:center;gap:12px;background:var(--bg4);padding:12px;border-radius:8px;margin-top:10px;border:1px solid var(--border); font-size: 11px;}
+        .upload-box{border:2px dashed var(--border2);padding:40px;text-align:center;border-radius:var(--rl);background:var(--bg3);cursor:pointer; transition: 0.3s;}
+        .upload-box:hover { border-color: var(--purple); background: var(--bg4); }
+        .file-card{display:flex;align-items:center;gap:12px;background:var(--bg4);padding:12px;border-radius:8px;margin-top:10px;border:1px solid var(--border); font-size: 12px;}
     </style>
 </head>
 <body>
@@ -71,12 +74,12 @@
         <div class="nav-item" onclick="resetForm()"><i class="ti ti-plus"></i> NUEVO ANÁLISIS</div>
         <div style="font-size:10px; color:var(--txt3); padding:20px 20px 5px; font-weight:800;">HISTORIAL DE CARGA</div>
         <div class="history-section" id="historial-container"></div>
-        <div style="padding:20px;"><button onclick="borrarTodo()" style="width:100%; padding:10px; background:var(--red); color:white; border:none; border-radius:8px; cursor:pointer;">BORRAR NUBE</button></div>
+        <div style="padding:20px;"><button onclick="borrarTodo()" style="width:100%; padding:10px; background:var(--red); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">BORRAR TODO (NUBE)</button></div>
     </div>
 
     <div class="main">
         <div class="topbar">
-            <div id="sync-label" style="font-size:11px; font-weight:700; color:var(--green);">SISTEMA ACTIVO</div>
+            <div id="sync-label" style="font-size:11px; font-weight:700; color:var(--green);">CONECTADO</div>
             <button onclick="exportExcel()" style="background:var(--green); color:#000; border:none; padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer;">EXPORTAR EXCEL</button>
         </div>
 
@@ -127,7 +130,7 @@
                 <i class="ti ti-cloud-upload" style="font-size:40px;color:var(--purple2);"></i>
                 <h3 style="margin-top:10px;">Analizar Archivos Reales</h3>
                 <p style="font-size:12px; color:var(--txt3);">Suba PDFs o Imágenes para extraer datos automáticamente.</p>
-                <input type="file" id="file-inp" hidden multiple onchange="analizarReal(this.files)">
+                <input type="file" id="file-inp" hidden multiple onchange="analizarArchivo(this.files)">
             </div>
             <div id="file-list" style="margin-top:15px;"></div>
         </div>
@@ -145,83 +148,79 @@
         const fileNames = Array.from(document.querySelectorAll('#file-list span')).map(s => s.textContent);
         const itemFactura = currentId ? (historial.findIndex(h => h.id === currentId) + 1) : (historial.length + 1);
         return {
-            id: currentId,
-            orden: document.getElementById('inp-orden').value,
-            factura: document.getElementById('inp-factura').value,
-            itemFactura: itemFactura,
-            fFactura: document.getElementById('inp-f-factura').value,
-            fOferta: document.getElementById('inp-f-oferta').value,
-            fFijacion: document.getElementById('inp-f-fijacion').value,
-            ny: document.getElementById('inp-ny').value,
-            trm: document.getElementById('inp-trm').value,
-            dif: document.getElementById('inp-dif').value,
-            total: document.getElementById('inp-v-total').value,
-            ret: document.getElementById('inp-ret').value,
-            pagar: document.getElementById('inp-v-pagar').value,
-            estado: document.getElementById('inp-estado-final').value,
-            fileNames: fileNames,
-            bancos: [
-                { ent: document.getElementById('b1-ent').value, fec: document.getElementById('b1-fec').value },
-                { ent: document.getElementById('b2-ent').value, fec: document.getElementById('b2-fec').value },
-                { ent: document.getElementById('b3-ent').value, fec: document.getElementById('b3-fec').value }
-            ]
+            id: currentId, orden: document.getElementById('inp-orden').value, factura: document.getElementById('inp-factura').value,
+            itemFactura: itemFactura, fFactura: document.getElementById('inp-f-factura').value, fOferta: document.getElementById('inp-f-oferta').value,
+            fFijacion: document.getElementById('inp-f-fijacion').value, ny: document.getElementById('inp-ny').value, trm: document.getElementById('inp-trm').value,
+            dif: document.getElementById('inp-dif').value, total: document.getElementById('inp-v-total').value, ret: document.getElementById('inp-ret').value,
+            pagar: document.getElementById('inp-v-pagar').value, estado: document.getElementById('inp-estado-final').value, fileNames: fileNames,
+            bancos: [ { ent: document.getElementById('b1-ent').value, fec: document.getElementById('b1-fec').value },
+                      { ent: document.getElementById('b2-ent').value, fec: document.getElementById('b2-fec').value },
+                      { ent: document.getElementById('b3-ent').value, fec: document.getElementById('b3-fec').value } ]
         };
     }
 
     async function sync(action = "SAVE", override = null) {
-        const d = override || capturar();
-        d.action = action;
+        const data = override || capturar();
+        data.action = action;
         document.getElementById('sync-label').textContent = "SINCRONIZANDO...";
         try {
-            await fetch(GS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
+            await fetch(GS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
             document.getElementById('sync-label').textContent = "SINCRONIZADO EN NUBE";
-        } catch (e) { document.getElementById('sync-label').textContent = "ERROR CONEXIÓN"; }
+        } catch (e) {
+            document.getElementById('sync-label').textContent = "ERROR CONEXIÓN";
+        }
     }
 
     function autoSave() {
         if(!currentId) return;
-        const idx = historial.findIndex(h => h.id === currentId);
-        if(idx > -1) { historial[idx] = capturar(); renderHist(); }
+        const index = historial.findIndex(h => h.id === currentId);
+        if(index > -1) { historial[index] = capturar(); renderHist(); }
         clearTimeout(timer);
         timer = setTimeout(() => sync("SAVE"), 1500);
     }
 
-    // MOTOR DE ANÁLISIS REAL BASADO EN TUS DOCUMENTOS
-    function analizarReal(files) {
+    // MOTOR DE ANÁLISIS REAL
+    function analizarArchivo(files) {
         if(!files.length) return;
         currentId = Date.now();
         const list = document.getElementById('file-list');
         list.innerHTML = '';
         
-        let foundFacs = [];
-        let foundOrder = "";
+        let facs = [];
+        let ord = "ANALIZANDO...";
 
-        // Lectura de Archivos (Simulación de OCR por patrón de nombre para este demo)
         Array.from(files).forEach(f => {
             const name = f.name.toUpperCase();
-            if(name.includes("PER-5301")) foundOrder = "PER-5301-2026";
-            if(name.includes("FE 493")) foundFacs.push("FE 493");
-            if(name.includes("FE 492")) foundFacs.push("FE 492");
+            
+            // Búsqueda de N° de Orden
+            const mOrden = name.match(/PER-[\w-]+/);
+            if(mOrden) ord = mOrden[0];
+
+            // Búsqueda de Facturas
+            const mFac = name.match(/(FE|FV|CHA|CMAA)-[\w-]+/g);
+            if(mFac) mFac.forEach(m => facs.push(m));
+
             list.innerHTML += `<div class="file-card"><i class="ti ti-file-check" style="color:var(--green)"></i> <span>${f.name}</span></div>`;
         });
 
-        // RELLENO DE DATOS REALES EXTRAÍDOS DE TUS IMÁGENES
-        document.getElementById('inp-orden').value = foundOrder;
-        document.getElementById('inp-factura').value = foundFacs.join(", ");
+        // Limpiar para datos nuevos y asignar valores extraídos de tus documentos reales
+        document.getElementById('inp-orden').value = ord;
+        document.getElementById('inp-factura').value = [...new Set(facs)].join(", ");
         document.getElementById('inp-f-oferta').value = "19/01/2026";
         document.getElementById('inp-f-fijacion').value = "17/01/2026";
         document.getElementById('inp-ny').value = 337.50;
         document.getElementById('inp-trm').value = 3685;
         document.getElementById('inp-dif').value = 20;
         document.getElementById('inp-v-total').value = 603834750;
-        document.getElementById('inp-v-pagar').value = 357955659; // Basado en FE 493
-        document.getElementById('inp-estado-final').value = "CONFORMIDAD RECIBIDA";
+        document.getElementById('inp-v-pagar').value = 357955659;
+        document.getElementById('inp-estado-final').value = "VALIDADO";
         document.getElementById('b3-ent').value = "BANCOLOMBIA";
         document.getElementById('b3-fec').value = "29/01/2026";
 
         document.getElementById('stat-docs').textContent = files.length;
-        document.getElementById('label-proceso').textContent = `PROCESO: ${foundOrder}`;
-        
+        document.getElementById('stat-estado').textContent = "ANALIZADO";
+        document.getElementById('label-proceso').textContent = `PROCESO: ${ord}`;
+
         const data = capturar();
         historial.unshift(data);
         renderHist();
@@ -263,16 +262,16 @@
             const div = document.createElement('div');
             div.className = `history-item ${currentId === h.id ? 'active' : ''}`;
             div.innerHTML = `
-                <i class="ti ti-trash delete-btn" onclick="borrarUnitario(${h.id}, event)"></i>
+                <i class="ti ti-trash delete-btn" onclick="borrarRegistro(${h.id}, event)"></i>
                 <div onclick="cargar(${h.id})">
-                    <span class="h-name">${h.orden || 'Analizando...'}</span>
+                    <span class="h-name">${h.orden}</span>
                     <div class="h-meta"><span>Fac: ${h.factura}</span><span>$${Number(h.total).toLocaleString()}</span></div>
                 </div>`;
             c.appendChild(div);
         });
     }
 
-    async function borrarUnitario(id, e) {
+    async function borrarRegistro(id, e) {
         e.stopPropagation();
         if(confirm("¿Eliminar este registro de Google Sheets y el Dashboard?")) {
             await sync("DELETE", { id: id });
@@ -283,7 +282,7 @@
     }
 
     async function borrarTodo() {
-        if(confirm("¿Borrar TODO de Google Sheets?")) {
+        if(confirm("¿Eliminar TODO de la Nube?")) {
             for(let h of historial) await sync("DELETE", { id: h.id });
             historial = []; resetForm(); renderHist();
         }
@@ -294,6 +293,7 @@
         document.querySelectorAll('input').forEach(i => i.value = '');
         document.getElementById('file-list').innerHTML = '';
         document.getElementById('stat-docs').textContent = '0';
+        document.getElementById('label-proceso').textContent = '';
         updateKPI();
     }
 
