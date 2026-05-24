@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DocAnalytics Pro - Gestión de Facturación Real</title>
+    <title>DocAnalytics Pro - Gestión Gerencial Real</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <style>
         *{box-sizing:border-box;margin:0;padding:0;}
@@ -24,21 +24,20 @@
         .logo{padding:25px;border-bottom:1px solid var(--border);text-align:center;}
         .logo-icon{width:45px;height:45px;background:var(--purple);border-radius:12px;display:flex;align-items:center;justify-content:center;margin: 0 auto 12px;}
         .logo-name{font-size:18px;font-weight:800;letter-spacing:1px; color:#fff;}
+        
         .nav-item{display:flex;align-items:center;gap:12px;padding:15px 20px;font-size:13px;color:var(--txt2);cursor:pointer;transition:0.2s;}
         .nav-item:hover, .nav-item.act{background:var(--bg4);color:var(--txt);}
 
-        /* Historial con botón de borrar */
+        /* Historial */
         .history-section { flex: 1; overflow-y: auto; padding-bottom: 20px; }
         .history-item { position:relative; padding: 15px 20px; border-bottom: 1px solid #ffffff05; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
         .history-item:hover { background: var(--bg4); }
         .history-item.active { background: var(--purple3); border-left-color: var(--purple); }
-        .history-item .h-content { /* Contenedor para evitar que el icono sea clickeable */ }
         .history-item .h-name { font-size: 13px; font-weight: 700; color: #fff; display: block; }
         .history-item .h-meta { font-size: 11px; color: var(--txt3); margin-top:5px; display:flex; justify-content:space-between; }
-        .delete-btn { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); color: var(--txt3); opacity: 0; transition: all 0.2s ease; }
-        .history-item:hover .delete-btn { opacity: 1; }
-        .delete-btn:hover { color: var(--red); transform: translateY(-50%) scale(1.1); }
-
+        
+        .delete-btn { position: absolute; top: 15px; right: 15px; color: var(--txt3); cursor: pointer; transition: 0.2s; z-index: 10; }
+        .delete-btn:hover { color: var(--red); transform: scale(1.2); }
 
         /* Main Content */
         .main{flex:1;display:flex;flex-direction:column;min-width:0;}
@@ -49,14 +48,14 @@
         .kpi{background:var(--bg3);border:1px solid var(--border);padding:18px;border-radius:var(--rl);border-left:4px solid var(--border2);}
         .kpi-lbl{font-size:10px;color:var(--txt3);font-weight:700;margin-bottom:8px;text-transform:uppercase;}
         .kpi-n{font-size:18px;font-weight:800; color: #fff;}
-        
+
         .panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:25px;margin-bottom:25px;}
         table{width:100%;border-collapse:collapse;}
-        th{text-align:left;color:var(--txt3);font-size:10px;padding:12px;border-bottom:1px solid var(--border);text-transform:uppercase; letter-spacing: 1px;}
+        th{text-align:left;color:var(--txt3);font-size:10px;padding:12px;border-bottom:1px solid var(--border);text-transform:uppercase;}
         td{padding:12px 10px;border-bottom:1px solid var(--border);}
         
         input { background:var(--bg4);border:1px solid var(--border);color:var(--txt);padding:10px;border-radius:6px;width:100%;font-size:13px; transition:0.2s; }
-        input:focus { border-color: var(--purple); outline:none; background: #252b3b; }
+        input:focus { border-color: var(--purple); outline:none; }
 
         .bank-grid{display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px;}
         .bank-card{background: var(--bg4); padding: 15px; border-radius: var(--r); border: 1px solid var(--border2);}
@@ -77,19 +76,19 @@
         <div class="nav-item" onclick="resetForm()"><i class="ti ti-plus"></i> NUEVO ANÁLISIS</div>
         <div style="font-size:10px; color:var(--txt3); padding:20px 20px 5px; font-weight:800;">HISTORIAL DE CARGA</div>
         <div class="history-section" id="historial-container"></div>
-        <div style="padding:20px;"><button onclick="borrarHistorialCompleto()" style="width:100%; padding:10px; background:var(--red); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">BORRAR TODO (NUBE)</button></div>
+        <div style="padding:20px;"><button onclick="borrarTodo()" style="width:100%; padding:10px; background:var(--red); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">BORRAR TODO (NUBE)</button></div>
     </div>
 
     <div class="main">
         <div class="topbar">
-            <div id="sync-label" style="font-size:11px; font-weight:700; color:var(--green);">CONECTADO CON GOOGLE SHEETS</div>
+            <div id="sync-label" style="font-size:11px; font-weight:700; color:var(--green);">SISTEMA ACTIVO</div>
             <button onclick="exportExcel()" style="background:var(--green); color:#000; border:none; padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer;">EXPORTAR EXCEL</button>
         </div>
 
         <div class="content">
             <div class="kpi-row">
                 <div class="kpi" style="border-left-color:var(--purple)"><div class="kpi-lbl">Docs</div><div class="kpi-n" id="stat-docs">0</div></div>
-                <div class="kpi" style="border-left-color:var(--green)"><div class="kpi-lbl">Val. Factura</div><div class="kpi-n" id="stat-val">$0</div></div>
+                <div class="kpi" style="border-left-color:var(--green)"><div class="kpi-lbl">Valor Factura</div><div class="kpi-n" id="stat-val">$0</div></div>
                 <div class="kpi" style="border-left-color:var(--blue)"><div class="kpi-lbl">Último Pago</div><div class="kpi-n" id="stat-pago">--/--/--</div></div>
                 <div class="kpi" style="border-left-color:var(--green)"><div class="kpi-lbl">Total Pagar</div><div class="kpi-n" id="stat-pay">$0</div></div>
                 <div class="kpi"><div class="kpi-lbl">Estado</div><div class="kpi-n" id="stat-estado" style="font-size:12px; color:var(--amber);">SIN DATOS</div></div>
@@ -133,7 +132,7 @@
                 <i class="ti ti-cloud-upload" style="font-size:40px;color:var(--purple2);"></i>
                 <h3 style="margin-top:10px;">Analizar Archivos Reales</h3>
                 <p style="font-size:12px; color:var(--txt3);">Suba PDFs o Imágenes para extraer datos automáticamente.</p>
-                <input type="file" id="file-inp" hidden multiple onchange="analizar(this.files)">
+                <input type="file" id="file-inp" hidden multiple onchange="analizarArchivo(this.files)">
             </div>
             <div id="file-list" style="margin-top:15px;"></div>
         </div>
@@ -142,66 +141,96 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
+    // URL DE TU GOOGLE APPS SCRIPT
     const GS_URL = "https://script.google.com/macros/s/AKfycbzOtIoI-3ptjVRBIYTulGnc03sLLgrcYk3BKw9Zwp0T-lG67QiKwXNNHcqR9FpeJHIb/exec";
+    
     let historial = [];
     let currentId = null;
     let timer;
 
     function capturar() {
-        const fileNames = Array.from(document.querySelectorAll('#file-list span')).map(s => s.textContent);
+        const fileNames = Array.from(document.querySelectorAll('#file-list .file-card span')).map(s => s.textContent);
         const itemFactura = currentId ? (historial.findIndex(h => h.id === currentId) + 1) : (historial.length + 1);
+
         return {
-            id: currentId, orden: document.getElementById('inp-orden').value, factura: document.getElementById('inp-factura').value,
-            itemFactura: itemFactura, fFactura: document.getElementById('inp-f-factura').value, fOferta: document.getElementById('inp-f-oferta').value,
-            fFijacion: document.getElementById('inp-f-fijacion').value, ny: document.getElementById('inp-ny').value, trm: document.getElementById('inp-trm').value,
-            dif: document.getElementById('inp-dif').value, total: document.getElementById('inp-v-total').value, ret: document.getElementById('inp-ret').value,
-            pagar: document.getElementById('inp-v-pagar').value, estado: document.getElementById('inp-estado-final').value, fileNames: fileNames,
-            bancos: [ { ent: document.getElementById('b1-ent').value, fec: document.getElementById('b1-fec').value },
-                      { ent: document.getElementById('b2-ent').value, fec: document.getElementById('b2-fec').value },
-                      { ent: document.getElementById('b3-ent').value, fec: document.getElementById('b3-fec').value } ]
+            id: currentId,
+            orden: document.getElementById('inp-orden').value,
+            factura: document.getElementById('inp-factura').value,
+            itemFactura: itemFactura,
+            fFactura: document.getElementById('inp-f-factura').value,
+            fOferta: document.getElementById('inp-f-oferta').value,
+            fFijacion: document.getElementById('inp-f-fijacion').value,
+            ny: document.getElementById('inp-ny').value,
+            trm: document.getElementById('inp-trm').value,
+            dif: document.getElementById('inp-dif').value,
+            total: document.getElementById('inp-v-total').value,
+            ret: document.getElementById('inp-ret').value,
+            pagar: document.getElementById('inp-v-pagar').value,
+            estado: document.getElementById('inp-estado-final').value,
+            fileNames: fileNames,
+            bancos: [
+                { ent: document.getElementById('b1-ent').value, fec: document.getElementById('b1-fec').value },
+                { ent: document.getElementById('b2-ent').value, fec: document.getElementById('b2-fec').value },
+                { ent: document.getElementById('b3-ent').value, fec: document.getElementById('b3-fec').value }
+            ]
         };
     }
 
-    async function sync(action = "SAVE", override = null) {
-        const data = override || capturar();
+    async function sync(action = "SAVE", overrideData = null) {
+        const data = overrideData || capturar();
         data.action = action;
         document.getElementById('sync-label').textContent = "SINCRONIZANDO...";
         try {
+            // Se usa no-cors para evitar bloqueos, la ejecución en Google ocurre igual
             await fetch(GS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
             document.getElementById('sync-label').textContent = "SINCRONIZADO EN NUBE";
         } catch (e) {
-            document.getElementById('sync-label').textContent = "ERROR CONEXIÓN";
+            document.getElementById('sync-label').textContent = "ERROR DE RED";
         }
     }
 
     function autoSave() {
         if(!currentId) return;
-        const index = historial.findIndex(h => h.id === currentId);
-        if(index > -1) { historial[index] = capturar(); renderHist(); }
+        const idx = historial.findIndex(h => h.id === currentId);
+        if(idx > -1) { historial[idx] = capturar(); renderHist(); }
         clearTimeout(timer);
         timer = setTimeout(() => sync("SAVE"), 1500);
     }
 
-    function analizar(files) {
+    function analizarArchivo(files) {
         if(!files.length) return;
+        
         currentId = Date.now();
         const list = document.getElementById('file-list');
         list.innerHTML = '';
         
-        let facturasExtraidas = [], ordenExtraida = "";
+        let facs = [];
+        let ord = "";
+
         Array.from(files).forEach(f => {
             const name = f.name.toUpperCase();
-            const mOrden = name.match(/PER-[\d-]+/); if(mOrden) ordenExtraida = mOrden[0];
-            const mFac = name.match(/CHA-[\d-]+|CMAA-[\d-]+|FV-[\d-]+/); if(mFac) facturasExtraidas.push(mFac[0]);
-            list.innerHTML += `<div class="file-card"><i class="ti ti-file-check" style="color:var(--green)"></i> <span>${f.name}</span></div>`;
+            
+            // Regex mejorado para capturar PER-XXXX y CHA/CMAA/FV
+            const matchOrden = name.match(/PER-[\w-]+/);
+            if(matchOrden) ord = matchOrden[0];
+
+            const matchFac = name.match(/(CHA|CMAA|FV)-[\w-]+/g);
+            if(matchFac) matchFac.forEach(m => facs.push(m));
+
+            list.innerHTML += `
+                <div class="file-card">
+                    <i class="ti ti-file-check" style="color:var(--green)"></i>
+                    <span>${f.name}</span>
+                </div>`;
         });
 
-        document.querySelectorAll('input').forEach(i => i.value = '');
-        document.getElementById('inp-orden').value = ordenExtraida;
-        document.getElementById('inp-factura').value = facturasExtraidas.join(", ");
-        document.getElementById('label-proceso').textContent = `PROCESO: ${ordenExtraida}`;
+        // Limpieza y asignación
+        resetInputs();
+        document.getElementById('inp-orden').value = ord;
+        document.getElementById('inp-factura').value = [...new Set(facs)].join(", "); // Evitar duplicados
         document.getElementById('stat-docs').textContent = files.length;
         document.getElementById('stat-estado').textContent = "ANALIZADO";
+        document.getElementById('label-proceso').textContent = `PROCESO: ${ord}`;
 
         const data = capturar();
         historial.unshift(data);
@@ -213,6 +242,7 @@
         const h = historial.find(x => x.id === id);
         if(!h) return;
         currentId = id;
+        
         document.getElementById('inp-orden').value = h.orden;
         document.getElementById('inp-factura').value = h.factura;
         document.getElementById('inp-f-oferta').value = h.fOferta;
@@ -225,12 +255,20 @@
         document.getElementById('inp-v-total').value = h.total;
         document.getElementById('inp-v-pagar').value = h.pagar;
         document.getElementById('inp-estado-final').value = h.estado;
+        
         h.bancos.forEach((b, i) => {
             document.getElementById(`b${i+1}-ent`).value = b.ent;
             document.getElementById(`b${i+1}-fec`).value = b.fec;
         });
-        document.getElementById('file-list').innerHTML = h.fileNames.map(n => `<div class="file-card"><i class="ti ti-file-check" style="color:var(--green)"></i> <span>${n}</span></div>`).join('');
+
+        document.getElementById('file-list').innerHTML = h.fileNames.map(n => `
+            <div class="file-card">
+                <i class="ti ti-file-check" style="color:var(--green)"></i>
+                <span>${n}</span>
+            </div>`).join('');
+            
         document.getElementById('stat-docs').textContent = h.fileNames.length;
+        document.getElementById('label-proceso').textContent = `PROCESO: ${h.orden}`;
         updateKPI();
         renderHist();
     }
@@ -238,15 +276,16 @@
     function renderHist() {
         const c = document.getElementById('historial-container');
         c.innerHTML = historial.length ? '' : '<div style="padding:20px; font-size:11px; color:var(--txt3); text-align:center;">Sin registros</div>';
+        
         historial.forEach(h => {
             const div = document.createElement('div');
             div.className = `history-item ${currentId === h.id ? 'active' : ''}`;
             div.innerHTML = `
-                <i class="ti ti-trash delete-btn" onclick="borrarItem(${h.id}, event)"></i>
-                <div class="h-content" onclick="cargar(${h.id})">
+                <i class="ti ti-trash delete-btn" onclick="borrarRegistro(${h.id}, event)" title="Eliminar de Nube"></i>
+                <div onclick="cargar(${h.id})">
                     <span class="h-name">${h.orden || 'Analizando...'}</span>
                     <div class="h-meta">
-                        <span>Fac: ${h.factura}</span>
+                        <span>Fac: ${h.factura.substring(0,15)}${h.factura.length > 15 ? '...' : ''}</span>
                         <span>$${Number(h.total || 0).toLocaleString()}</span>
                     </div>
                 </div>
@@ -255,19 +294,19 @@
         });
     }
 
-    async function borrarItem(id, event) {
-        event.stopPropagation(); // Evita que se dispare el evento de cargar
-        if (confirm(`¿Eliminar el registro de Google Sheets y del Dashboard?`)) {
+    async function borrarRegistro(id, e) {
+        e.stopPropagation();
+        if(confirm("¿Eliminar este registro de la Nube (Google Sheets) y del Dashboard?")) {
             await sync("DELETE", { id: id });
-            historial = historial.filter(h => h.id !== id);
+            historial = historial.filter(x => x.id !== id);
             if(currentId === id) resetForm();
             renderHist();
         }
     }
 
-    async function borrarHistorialCompleto() {
-        if (confirm("ATENCIÓN: ¿Desea eliminar TODOS los registros del Dashboard y de Google Sheets? Esta acción no se puede deshacer.")) {
-            for (let h of historial) {
+    async function borrarTodo() {
+        if(confirm("ATENCIÓN: Se eliminarán TODOS los registros de Google Sheets. ¿Continuar?")) {
+            for(let h of historial) {
                 await sync("DELETE", { id: h.id });
             }
             historial = [];
@@ -276,11 +315,16 @@
         }
     }
 
+    function resetInputs() {
+        document.querySelectorAll('input').forEach(i => i.value = '');
+    }
+
     function resetForm() {
         currentId = null;
-        document.querySelectorAll('input').forEach(i => i.value = '');
+        resetInputs();
         document.getElementById('file-list').innerHTML = '';
         document.getElementById('stat-docs').textContent = '0';
+        document.getElementById('label-proceso').textContent = '';
         updateKPI();
     }
 
@@ -295,10 +339,10 @@
     function exportExcel() {
         const d = capturar();
         if(!d.orden) return alert("No hay datos para exportar.");
-        const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet([d]);
-        XLSX.utils.book_append_sheet(wb, ws, "Resumen");
-        XLSX.writeFile(wb, `Reporte_Doc_${d.orden}.xlsx`);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Reporte");
+        XLSX.writeFile(wb, `Reporte_${d.orden}.xlsx`);
     }
 </script>
 </body>
