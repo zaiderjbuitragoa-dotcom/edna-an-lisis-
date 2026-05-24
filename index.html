@@ -27,26 +27,29 @@
         .nav-item{display:flex;align-items:center;gap:12px;padding:15px 20px;font-size:13px;color:var(--txt2);cursor:pointer;transition:0.2s;}
         .nav-item:hover, .nav-item.act{background:var(--bg4);color:var(--txt);}
 
-        /* Historial */
+        /* Historial con botón de borrar */
         .history-section { flex: 1; overflow-y: auto; padding-bottom: 20px; }
-        .history-item { padding: 15px 20px; border-bottom: 1px solid #ffffff05; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
+        .history-item { position:relative; padding: 15px 20px; border-bottom: 1px solid #ffffff05; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
         .history-item:hover { background: var(--bg4); }
         .history-item.active { background: var(--purple3); border-left-color: var(--purple); }
+        .history-item .h-content { /* Contenedor para evitar que el icono sea clickeable */ }
         .history-item .h-name { font-size: 13px; font-weight: 700; color: #fff; display: block; }
         .history-item .h-meta { font-size: 11px; color: var(--txt3); margin-top:5px; display:flex; justify-content:space-between; }
+        .delete-btn { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); color: var(--txt3); opacity: 0; transition: all 0.2s ease; }
+        .history-item:hover .delete-btn { opacity: 1; }
+        .delete-btn:hover { color: var(--red); transform: translateY(-50%) scale(1.1); }
+
 
         /* Main Content */
         .main{flex:1;display:flex;flex-direction:column;min-width:0;}
         .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 30px;background:var(--bg3);border-bottom:1px solid var(--border);}
         .content{padding:25px 30px; overflow-y: auto;}
         
-        /* KPIs */
         .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:15px;margin-bottom:25px;}
         .kpi{background:var(--bg3);border:1px solid var(--border);padding:18px;border-radius:var(--rl);border-left:4px solid var(--border2);}
         .kpi-lbl{font-size:10px;color:var(--txt3);font-weight:700;margin-bottom:8px;text-transform:uppercase;}
         .kpi-n{font-size:18px;font-weight:800; color: #fff;}
-
-        /* Formulario */
+        
         .panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:25px;margin-bottom:25px;}
         table{width:100%;border-collapse:collapse;}
         th{text-align:left;color:var(--txt3);font-size:10px;padding:12px;border-bottom:1px solid var(--border);text-transform:uppercase; letter-spacing: 1px;}
@@ -74,7 +77,7 @@
         <div class="nav-item" onclick="resetForm()"><i class="ti ti-plus"></i> NUEVO ANÁLISIS</div>
         <div style="font-size:10px; color:var(--txt3); padding:20px 20px 5px; font-weight:800;">HISTORIAL DE CARGA</div>
         <div class="history-section" id="historial-container"></div>
-        <div style="padding:20px;"><button onclick="borrarTodo()" style="width:100%; padding:10px; background:var(--red); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">BORRAR NUBE</button></div>
+        <div style="padding:20px;"><button onclick="borrarHistorialCompleto()" style="width:100%; padding:10px; background:var(--red); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">BORRAR TODO (NUBE)</button></div>
     </div>
 
     <div class="main">
@@ -102,48 +105,26 @@
                         <tr><th>Concepto</th><th>VALOR EN DOCUMENTO</th><th>Concepto</th><th>VALOR EN DOCUMENTO</th></tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>N° Orden Compra</td><td><input type="text" id="inp-orden" oninput="autoSave()"></td>
-                            <td>N° Factura</td><td><input type="text" id="inp-factura" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Fecha Oferta</td><td><input type="text" id="inp-f-oferta" oninput="autoSave()"></td>
-                            <td>Fecha Fijación</td><td><input type="text" id="inp-f-fijacion" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Bolsa NY</td><td><input type="number" id="inp-ny" step="0.01" oninput="autoSave()"></td>
-                            <td>TRM</td><td><input type="number" id="inp-trm" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Diferencial</td><td><input type="number" id="inp-dif" oninput="autoSave()"></td>
-                            <td>Retención</td><td><input type="number" id="inp-ret" oninput="updateKPI(); autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Fecha Factura</td><td><input type="text" id="inp-f-factura" oninput="autoSave()"></td>
-                            <td>Valor Total</td><td><input type="number" id="inp-v-total" oninput="updateKPI(); autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Total a Pagar</td><td><input type="number" id="inp-v-pagar" oninput="updateKPI(); autoSave()"></td>
-                            <td>Estado Final</td><td><input type="text" id="inp-estado-final" oninput="autoSave()"></td>
-                        </tr>
+                        <tr><td>N° Orden Compra</td><td><input type="text" id="inp-orden" oninput="autoSave()"></td><td>N° Factura</td><td><input type="text" id="inp-factura" oninput="autoSave()"></td></tr>
+                        <tr><td>Fecha Oferta</td><td><input type="text" id="inp-f-oferta" oninput="autoSave()"></td><td>Fecha Fijación</td><td><input type="text" id="inp-f-fijacion" oninput="autoSave()"></td></tr>
+                        <tr><td>Bolsa NY</td><td><input type="number" id="inp-ny" step="0.01" oninput="autoSave()"></td><td>TRM</td><td><input type="number" id="inp-trm" oninput="autoSave()"></td></tr>
+                        <tr><td>Diferencial</td><td><input type="number" id="inp-dif" oninput="autoSave()"></td><td>Retención</td><td><input type="number" id="inp-ret" oninput="updateKPI(); autoSave()"></td></tr>
+                        <tr><td>Fecha Factura</td><td><input type="text" id="inp-f-factura" oninput="autoSave()"></td><td>Valor Total</td><td><input type="number" id="inp-v-total" oninput="updateKPI(); autoSave()"></td></tr>
+                        <tr><td>Total a Pagar</td><td><input type="number" id="inp-v-pagar" oninput="updateKPI(); autoSave()"></td><td>Estado Final</td><td><input type="text" id="inp-estado-final" oninput="autoSave()"></td></tr>
                     </tbody>
                 </table>
-
                 <div class="bank-grid">
                     <div class="bank-card">
                         <div style="font-size:9px; color:var(--purple); font-weight:800; margin-bottom:5px;">SOPORTE 1</div>
-                        <input type="text" id="b1-ent" placeholder="Banco" oninput="autoSave()">
-                        <input type="text" id="b1-fec" placeholder="Fecha" style="margin-top:5px;" oninput="autoSave()">
+                        <input type="text" id="b1-ent" placeholder="Banco" oninput="autoSave()"><input type="text" id="b1-fec" placeholder="Fecha" style="margin-top:5px;" oninput="autoSave()">
                     </div>
                     <div class="bank-card">
                         <div style="font-size:9px; color:var(--purple); font-weight:800; margin-bottom:5px;">SOPORTE 2</div>
-                        <input type="text" id="b2-ent" placeholder="Banco" oninput="autoSave()">
-                        <input type="text" id="b2-fec" placeholder="Fecha" style="margin-top:5px;" oninput="autoSave()">
+                        <input type="text" id="b2-ent" placeholder="Banco" oninput="autoSave()"><input type="text" id="b2-fec" placeholder="Fecha" style="margin-top:5px;" oninput="autoSave()">
                     </div>
                     <div class="bank-card">
-                        <div style="font-size:9px; color:var(--purple); font-weight:800; margin-bottom:5px;">SOPORTE 3 (PAGO FINAL)</div>
-                        <input type="text" id="b3-ent" placeholder="Banco Pago" oninput="autoSave()">
-                        <input type="text" id="b3-fec" placeholder="Fecha Pago" style="margin-top:5px;" oninput="updateKPI(); autoSave()">
+                        <div style="font-size:9px; color:var(--purple); font-weight:800; margin-bottom:5px;">PAGO FINAL</div>
+                        <input type="text" id="b3-ent" placeholder="Banco Pago" oninput="autoSave()"><input type="text" id="b3-fec" placeholder="Fecha Pago" style="margin-top:5px;" oninput="updateKPI(); autoSave()">
                     </div>
                 </div>
             </div>
@@ -161,39 +142,23 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-    // CAMBIA ESTO POR TU URL DE GOOGLE APPS SCRIPT ACTUALIZADA
     const GS_URL = "https://script.google.com/macros/s/AKfycbzOtIoI-3ptjVRBIYTulGnc03sLLgrcYk3BKw9Zwp0T-lG67QiKwXNNHcqR9FpeJHIb/exec";
-    
     let historial = [];
     let currentId = null;
     let timer;
 
     function capturar() {
-        const fileNames = Array.from(document.querySelectorAll('#file-list .file-card span')).map(s => s.textContent);
-        // Generar un número de ítem basado en la posición del historial
+        const fileNames = Array.from(document.querySelectorAll('#file-list span')).map(s => s.textContent);
         const itemFactura = currentId ? (historial.findIndex(h => h.id === currentId) + 1) : (historial.length + 1);
-
         return {
-            id: currentId,
-            orden: document.getElementById('inp-orden').value,
-            factura: document.getElementById('inp-factura').value,
-            itemFactura: itemFactura,
-            fFactura: document.getElementById('inp-f-factura').value,
-            fOferta: document.getElementById('inp-f-oferta').value,
-            fFijacion: document.getElementById('inp-f-fijacion').value,
-            ny: document.getElementById('inp-ny').value,
-            trm: document.getElementById('inp-trm').value,
-            dif: document.getElementById('inp-dif').value,
-            total: document.getElementById('inp-v-total').value,
-            ret: document.getElementById('inp-ret').value,
-            pagar: document.getElementById('inp-v-pagar').value,
-            estado: document.getElementById('inp-estado-final').value,
-            fileNames: fileNames,
-            bancos: [
-                { ent: document.getElementById('b1-ent').value, fec: document.getElementById('b1-fec').value },
-                { ent: document.getElementById('b2-ent').value, fec: document.getElementById('b2-fec').value },
-                { ent: document.getElementById('b3-ent').value, fec: document.getElementById('b3-fec').value }
-            ]
+            id: currentId, orden: document.getElementById('inp-orden').value, factura: document.getElementById('inp-factura').value,
+            itemFactura: itemFactura, fFactura: document.getElementById('inp-f-factura').value, fOferta: document.getElementById('inp-f-oferta').value,
+            fFijacion: document.getElementById('inp-f-fijacion').value, ny: document.getElementById('inp-ny').value, trm: document.getElementById('inp-trm').value,
+            dif: document.getElementById('inp-dif').value, total: document.getElementById('inp-v-total').value, ret: document.getElementById('inp-ret').value,
+            pagar: document.getElementById('inp-v-pagar').value, estado: document.getElementById('inp-estado-final').value, fileNames: fileNames,
+            bancos: [ { ent: document.getElementById('b1-ent').value, fec: document.getElementById('b1-fec').value },
+                      { ent: document.getElementById('b2-ent').value, fec: document.getElementById('b2-fec').value },
+                      { ent: document.getElementById('b3-ent').value, fec: document.getElementById('b3-fec').value } ]
         };
     }
 
@@ -223,24 +188,15 @@
         const list = document.getElementById('file-list');
         list.innerHTML = '';
         
-        let facturasExtraidas = [];
-        let ordenExtraida = "";
-
+        let facturasExtraidas = [], ordenExtraida = "";
         Array.from(files).forEach(f => {
             const name = f.name.toUpperCase();
-            // Extracción inteligente real de nombres
             const mOrden = name.match(/PER-[\d-]+/); if(mOrden) ordenExtraida = mOrden[0];
-            const mFac = name.match(/CHA-[\d-]+|CMAA-[\d-]+/); if(mFac) facturasExtraidas.push(mFac[0]);
-
-            const div = document.createElement('div');
-            div.className = 'file-card';
-            div.innerHTML = `<i class="ti ti-file-check" style="color:var(--green)"></i> <span>${f.name}</span>`;
-            list.appendChild(div);
+            const mFac = name.match(/CHA-[\d-]+|CMAA-[\d-]+|FV-[\d-]+/); if(mFac) facturasExtraidas.push(mFac[0]);
+            list.innerHTML += `<div class="file-card"><i class="ti ti-file-check" style="color:var(--green)"></i> <span>${f.name}</span></div>`;
         });
 
-        // Limpiar para datos nuevos
         document.querySelectorAll('input').forEach(i => i.value = '');
-        
         document.getElementById('inp-orden').value = ordenExtraida;
         document.getElementById('inp-factura').value = facturasExtraidas.join(", ");
         document.getElementById('label-proceso').textContent = `PROCESO: ${ordenExtraida}`;
@@ -285,11 +241,39 @@
         historial.forEach(h => {
             const div = document.createElement('div');
             div.className = `history-item ${currentId === h.id ? 'active' : ''}`;
-            div.onclick = () => cargar(h.id);
-            div.innerHTML = `<span class="h-name">${h.orden || 'Analizando...'}</span>
-                <div class="h-meta"><span>Fac: ${h.factura}</span><span>$${Number(h.total).toLocaleString()}</span></div>`;
+            div.innerHTML = `
+                <i class="ti ti-trash delete-btn" onclick="borrarItem(${h.id}, event)"></i>
+                <div class="h-content" onclick="cargar(${h.id})">
+                    <span class="h-name">${h.orden || 'Analizando...'}</span>
+                    <div class="h-meta">
+                        <span>Fac: ${h.factura}</span>
+                        <span>$${Number(h.total || 0).toLocaleString()}</span>
+                    </div>
+                </div>
+            `;
             c.appendChild(div);
         });
+    }
+
+    async function borrarItem(id, event) {
+        event.stopPropagation(); // Evita que se dispare el evento de cargar
+        if (confirm(`¿Eliminar el registro de Google Sheets y del Dashboard?`)) {
+            await sync("DELETE", { id: id });
+            historial = historial.filter(h => h.id !== id);
+            if(currentId === id) resetForm();
+            renderHist();
+        }
+    }
+
+    async function borrarHistorialCompleto() {
+        if (confirm("ATENCIÓN: ¿Desea eliminar TODOS los registros del Dashboard y de Google Sheets? Esta acción no se puede deshacer.")) {
+            for (let h of historial) {
+                await sync("DELETE", { id: h.id });
+            }
+            historial = [];
+            resetForm();
+            renderHist();
+        }
     }
 
     function resetForm() {
@@ -308,16 +292,9 @@
         document.getElementById('stat-pago').textContent = document.getElementById('b3-fec').value || '--/--/--';
     }
 
-    async function borrarTodo() {
-        if(confirm("¿Eliminar todo del Dashboard y de Google Sheets?")){
-            for(let h of historial) await sync("DELETE", {id: h.id});
-            historial = []; resetForm(); renderHist();
-        }
-    }
-
     function exportExcel() {
         const d = capturar();
-        if(!d.orden) return alert("Sin datos");
+        if(!d.orden) return alert("No hay datos para exportar.");
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet([d]);
         XLSX.utils.book_append_sheet(wb, ws, "Resumen");
