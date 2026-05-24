@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DocAnalytics Pro - Gestión Gerencial Real</title>
+    <title>DocAnalytics Pro - Gestión Gerencial de Caficultura</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;600;700;800&display=swap');
@@ -20,225 +20,91 @@
             --mono: 'IBM Plex Mono', monospace;
             --r:6px;--rl:10px;
         }
-        html,body{height:100%;}
-        body{background:var(--bg);color:var(--txt);font-family:var(--font);overflow:hidden;}
-
-        /* ── LAYOUT ── */
+        html,body{height:100%;background:var(--bg);color:var(--txt);font-family:var(--font);overflow:hidden;}
         .wrap{display:flex;height:100vh;max-width:1680px;margin:0 auto;}
 
-        /* ── SIDEBAR ── */
-        .sidebar{
-            width:270px;flex-shrink:0;
-            background:var(--bg2);
-            border-right:1px solid var(--border);
-            display:flex;flex-direction:column;
-            overflow:hidden;
-        }
-        .logo{
-            padding:22px 20px;border-bottom:1px solid var(--border);
-            display:flex;align-items:center;gap:12px;
-        }
-        .logo-icon{
-            width:38px;height:38px;flex-shrink:0;
-            background:linear-gradient(135deg,var(--purple),var(--cyan));
-            border-radius:10px;
-            display:flex;align-items:center;justify-content:center;
-        }
+        /* SIDEBAR PROFESIONAL */
+        .sidebar{width:280px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+        .logo{padding:22px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+        .logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--purple),var(--cyan));border-radius:10px;display:flex;align-items:center;justify-content:center;}
         .logo-name{font-size:13px;font-weight:800;letter-spacing:2px;color:#fff;font-family:var(--mono);}
-        .logo-sub{font-size:9px;color:var(--txt3);font-family:var(--mono);margin-top:2px;}
+        
+        .btn-nuevo{display:flex;align-items:center;gap:10px;margin:15px 12px;padding:12px;background:var(--purple3);border:1px solid var(--purple2);border-radius:var(--r);color:var(--txt);font-size:12px;font-weight:700;cursor:pointer;transition:.2s;}
+        .btn-nuevo:hover{background:var(--purple2);}
 
-        .btn-nuevo{
-            display:flex;align-items:center;gap:10px;
-            margin:15px 12px;padding:10px 14px;
-            background:var(--purple3);border:1px solid var(--purple2);
-            border-radius:var(--r);color:var(--txt);font-size:12px;font-weight:700;
-            cursor:pointer;transition:.2s;letter-spacing:.5px;
-        }
-        .btn-nuevo:hover{background:var(--purple2);border-color:var(--purple);}
-
-        .sec-label{
-            font-size:9px;color:var(--txt3);font-weight:800;
-            padding:10px 16px 4px;letter-spacing:1.5px;font-family:var(--mono);
-        }
-
-        .history-section{flex:1;overflow-y:auto;}
-        .history-item{
-            position:relative;
-            padding:12px 16px;border-bottom:1px solid #ffffff04;
-            cursor:pointer;transition:.15s;
-            border-left:3px solid transparent;
-        }
-        .history-item:hover{background:var(--bg4);}
-        .history-item.active{background:var(--purple3);border-left-color:var(--purple);}
-        .h-name{font-size:12px;font-weight:700;color:#fff;font-family:var(--mono);}
-        .h-meta{font-size:10px;color:var(--txt3);margin-top:4px;display:flex;justify-content:space-between;}
-        .delete-btn{
-            position:absolute;top:12px;right:12px;
-            color:var(--txt3);cursor:pointer;transition:.2s;font-size:14px;
-        }
+        .history-section{flex:1;overflow-y:auto;padding:10px;}
+        .history-item{position:relative;padding:14px;background:var(--bg3);border-radius:var(--r);margin-bottom:8px;border:1px solid var(--border);cursor:pointer;transition:.2s;}
+        .history-item:hover{border-color:var(--purple);background:var(--bg4);}
+        .history-item.active{background:var(--purple3);border-color:var(--purple);}
+        .h-name{font-size:11px;font-weight:700;color:#fff;font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .h-meta{font-size:9px;color:var(--txt3);margin-top:5px;display:flex;justify-content:space-between;}
+        .delete-btn{position:absolute;top:10px;right:10px;color:var(--txt3);cursor:pointer;font-size:14px;z-index:10;}
         .delete-btn:hover{color:var(--red);}
 
-        .sidebar-footer{padding:14px;border-top:1px solid var(--border);}
-        .btn-danger{
-            width:100%;padding:9px;background:transparent;
-            color:var(--red);border:1px solid var(--red);
-            border-radius:var(--r);cursor:pointer;font-size:11px;font-weight:700;
-            letter-spacing:1px;transition:.2s;
-        }
-        .btn-danger:hover{background:var(--red);color:#000;}
-
-        /* ── MAIN ── */
+        /* CONTENIDO PRINCIPAL */
         .main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
-        .topbar{
-            display:flex;align-items:center;justify-content:space-between;
-            padding:14px 28px;
-            background:var(--bg2);border-bottom:1px solid var(--border);
-            flex-shrink:0;
-        }
-        .sync-pill{
-            display:flex;align-items:center;gap:7px;
-            font-size:10px;font-weight:700;font-family:var(--mono);
-            letter-spacing:1px;
-        }
-        .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+        .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:var(--bg2);border-bottom:1px solid var(--border);}
+        .sync-pill{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;font-family:var(--mono);}
+        .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
         .sync-dot.spin{animation:pulse 1s infinite;}
         @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 
-        .btn-export{
-            background:var(--green);color:#000;border:none;
-            padding:9px 20px;border-radius:var(--r);
-            font-weight:800;font-size:11px;letter-spacing:1px;
-            cursor:pointer;transition:.2s;
-        }
-        .btn-export:hover{background:var(--green2);}
-
         .content{flex:1;overflow-y:auto;padding:22px 28px;}
 
-        /* ── KPI ROW ── */
+        /* KPIs */
         .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
-        .kpi{
-            background:var(--bg3);
-            border:1px solid var(--border);
-            border-top:2px solid var(--border2);
-            padding:14px 16px;border-radius:var(--rl);
-            transition:.2s;
-        }
+        .kpi{background:var(--bg3);border:1px solid var(--border);border-top:2px solid var(--border2);padding:14px 16px;border-radius:var(--rl);}
         .kpi-lbl{font-size:9px;color:var(--txt3);font-weight:700;margin-bottom:6px;letter-spacing:1.5px;font-family:var(--mono);}
         .kpi-n{font-size:17px;font-weight:800;color:#fff;font-family:var(--mono);}
 
-        /* ── PANEL ── */
-        .panel{
-            background:var(--bg3);border:1px solid var(--border);
-            border-radius:var(--rl);padding:22px;margin-bottom:18px;
-        }
-        .panel-hdr{
-            display:flex;justify-content:space-between;align-items:center;
-            margin-bottom:18px;
-        }
-        .panel-title{font-weight:800;font-size:12px;letter-spacing:1px;font-family:var(--mono);display:flex;align-items:center;gap:8px;}
-
+        /* PANEL DE DATOS */
+        .panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:22px;margin-bottom:18px;}
+        .panel-title{font-weight:800;font-size:12px;letter-spacing:1px;font-family:var(--mono);margin-bottom:18px;color:var(--cyan);display:flex;align-items:center;gap:8px;}
+        
         table{width:100%;border-collapse:collapse;}
-        th{
-            text-align:left;color:var(--txt3);font-size:9px;
-            padding:10px 12px;border-bottom:1px solid var(--border);
-            letter-spacing:1px;font-family:var(--mono);font-weight:700;
-        }
-        td{padding:8px 10px;border-bottom:1px solid #ffffff04;font-size:13px;}
-        td:first-child,td:nth-child(3){color:var(--txt2);font-size:11px;font-family:var(--mono);}
-
-        input{
-            background:var(--bg4);border:1px solid var(--border);
-            color:var(--txt);padding:9px 12px;border-radius:var(--r);
-            width:100%;font-size:12px;font-family:var(--mono);
-            transition:.2s;
-        }
+        td{padding:8px 10px;border-bottom:1px solid #ffffff04;font-size:12px;}
+        input{background:var(--bg4);border:1px solid var(--border);color:var(--txt);padding:9px 12px;border-radius:var(--r);width:100%;font-size:12px;font-family:var(--mono);transition:.2s;}
         input:focus{border-color:var(--purple);outline:none;background:var(--bg5);}
-        input::placeholder{color:var(--txt3);}
 
-        /* ── BANK GRID ── */
-        .bank-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:18px;}
-        .bank-card{
-            background:var(--bg4);padding:14px;
-            border-radius:var(--r);border:1px solid var(--border2);
-        }
-        .bank-label{
-            font-size:9px;font-weight:800;margin-bottom:8px;
-            letter-spacing:1.5px;font-family:var(--mono);
-        }
-        .bank-card input+input{margin-top:6px;}
+        /* BANCOS */
+        .bank-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px;}
+        .bank-card{background:var(--bg4);padding:14px;border-radius:var(--r);border:1px solid var(--border2);}
+        .bank-label{font-size:9px;font-weight:800;margin-bottom:8px;letter-spacing:1.5px;font-family:var(--mono);}
 
-        /* ── UPLOAD BOX ── */
-        .upload-box{
-            border:2px dashed var(--border2);padding:36px 40px;text-align:center;
-            border-radius:var(--rl);background:var(--bg3);cursor:pointer;
-            transition:.3s;position:relative;
-        }
+        /* UPLOAD */
+        .upload-box{border:2px dashed var(--border2);padding:36px;text-align:center;border-radius:var(--rl);background:var(--bg3);cursor:pointer;transition:.3s;}
         .upload-box:hover{border-color:var(--purple);background:var(--bg4);}
-        .upload-box h3{margin-top:10px;font-size:14px;}
-        .upload-box p{font-size:11px;color:var(--txt3);margin-top:4px;}
 
-        /* ── AI LOADING OVERLAY ── */
-        #ai-overlay{
-            display:none;
-            position:fixed;inset:0;z-index:999;
-            background:#04050acc;
-            backdrop-filter:blur(6px);
-            align-items:center;justify-content:center;
-            flex-direction:column;gap:20px;
-        }
+        /* OVERLAY IA */
+        #ai-overlay{display:none;position:fixed;inset:0;z-index:999;background:#04050acc;backdrop-filter:blur(6px);align-items:center;justify-content:center;flex-direction:column;gap:20px;}
         #ai-overlay.visible{display:flex;}
-        .ai-spinner{
-            width:60px;height:60px;
-            border:3px solid var(--border2);
-            border-top-color:var(--cyan);
-            border-radius:50%;
-            animation:spin 0.8s linear infinite;
-        }
+        .ai-spinner{width:60px;height:60px;border:3px solid var(--border2);border-top-color:var(--cyan);border-radius:50%;animation:spin 0.8s linear infinite;}
         @keyframes spin{to{transform:rotate(360deg);}}
 
-        .file-card{
-            display:flex;align-items:center;gap:10px;
-            background:var(--bg4);padding:10px 14px;
-            border-radius:var(--r);margin-top:8px;
-            border:1px solid var(--border);font-size:11px;font-family:var(--mono);
-        }
-
         ::-webkit-scrollbar{width:4px;}
-        ::-webkit-scrollbar-track{background:transparent;}
         ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
     </style>
 </head>
 <body>
 
-<!-- AI Loading Overlay -->
 <div id="ai-overlay">
     <div class="ai-spinner"></div>
-    <div style="color:var(--cyan); font-family:var(--mono); letter-spacing:2px; font-weight:800;">INTELIGENCIA ARTIFICIAL ANALIZANDO...</div>
-    <div style="font-size:11px; color:var(--txt3)">Procesando documentos de café y finanzas con Gemini 1.5 Flash</div>
+    <div style="color:var(--cyan); font-family:var(--mono); font-weight:800;">PROCESANDO DOCUMENTO COMERCIAL...</div>
+    <div id="ai-status" style="font-size:11px; color:var(--txt3)">IA Gemini 1.5 Flash - Modo sin restricciones</div>
 </div>
 
 <div class="wrap">
     <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="logo">
-            <div class="logo-icon"><i class="ti ti-report-analytics" style="font-size:20px;color:#fff;"></i></div>
-            <div>
-                <div class="logo-name">DOC ANALYTICS</div>
-                <div class="logo-sub">GESTIÓN GERENCIAL</div>
-            </div>
+            <div class="logo-icon"><i class="ti ti-report-analytics" style="color:#fff"></i></div>
+            <div class="logo-name">DOC ANALYTICS</div>
         </div>
-
-        <div class="btn-nuevo" onclick="resetForm()">
-            <i class="ti ti-plus"></i> NUEVO ANÁLISIS
-        </div>
-
-        <div class="sec-label">HISTORIAL DE CARGA</div>
-        <div class="history-section" id="historial-container">
-            <div style="padding:20px;font-size:11px;color:var(--txt3);text-align:center;">Sin registros</div>
-        </div>
-
-        <div class="sidebar-footer">
-            <button class="btn-danger" onclick="borrarTodo()">⚠ BORRAR TODO (NUBE)</button>
+        <div class="btn-nuevo" onclick="resetForm()"><i class="ti ti-plus"></i> NUEVO ANÁLISIS</div>
+        <div style="padding:10px 20px; font-size:9px; color:var(--txt3); font-family:var(--mono)">HISTORIAL LOCAL</div>
+        <div class="history-section" id="historial-container"></div>
+        <div style="padding:15px; border-top:1px solid var(--border)">
+            <button onclick="localStorage.clear();location.reload();" style="width:100%; background:none; border:1px solid var(--red); color:var(--red); padding:8px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:bold;">LIMPIAR TODO</button>
         </div>
     </div>
 
@@ -249,249 +115,195 @@
                 <div class="sync-dot" id="sync-dot"></div>
                 <span id="sync-label" style="color:var(--green);">SISTEMA ACTIVO</span>
             </div>
-            <button class="btn-export" onclick="exportExcel()">↓ EXPORTAR EXCEL</button>
+            <button onclick="exportExcel()" style="background:var(--green); color:#000; border:none; padding:9px 20px; border-radius:6px; font-weight:800; cursor:pointer; font-size:11px;">↓ EXCEL</button>
         </div>
 
         <div class="content">
-            <!-- KPI Row -->
+            <!-- KPIs -->
             <div class="kpi-row">
-                <div class="kpi" style="border-top-color:var(--purple)">
-                    <div class="kpi-lbl">DOCUMENTOS</div>
-                    <div class="kpi-n" id="stat-docs">0</div>
-                </div>
-                <div class="kpi" style="border-top-color:var(--green)">
-                    <div class="kpi-lbl">VALOR FACTURA</div>
-                    <div class="kpi-n" id="stat-val">$0</div>
-                </div>
-                <div class="kpi" style="border-top-color:var(--blue)">
-                    <div class="kpi-lbl">ÚLTIMO PAGO</div>
-                    <div class="kpi-n" id="stat-pago">--/--/--</div>
-                </div>
-                <div class="kpi" style="border-top-color:var(--cyan)">
-                    <div class="kpi-lbl">TOTAL A PAGAR</div>
-                    <div class="kpi-n" id="stat-pay">$0</div>
-                </div>
-                <div class="kpi" style="border-top-color:var(--amber)">
-                    <div class="kpi-lbl">ESTADO</div>
-                    <div class="kpi-n" id="stat-estado" style="font-size:11px;color:var(--amber);">SIN DATOS</div>
-                </div>
+                <div class="kpi"><div class="kpi-lbl">VALOR TOTAL</div><div class="kpi-n" id="stat-total">$0</div></div>
+                <div class="kpi"><div class="kpi-lbl">A PAGAR</div><div class="kpi-n" id="stat-pagar" style="color:var(--cyan)">$0</div></div>
+                <div class="kpi"><div class="kpi-lbl">BOLSA NY</div><div class="kpi-n" id="stat-ny">0.00</div></div>
+                <div class="kpi"><div class="kpi-lbl">TRM</div><div class="kpi-n" id="stat-trm">0.00</div></div>
+                <div class="kpi"><div class="kpi-lbl">ESTADO</div><div class="kpi-n" id="stat-estado" style="font-size:11px; color:var(--amber)">VACÍO</div></div>
             </div>
 
-            <!-- Datos Extraídos -->
+            <!-- PANEL CENTRAL -->
             <div class="panel">
-                <div class="panel-hdr">
-                    <div class="panel-title"><i class="ti ti-file-text"></i> DATOS REALES EXTRAÍDOS POR IA</div>
-                </div>
+                <div class="panel-title"><i class="ti ti-file-text"></i> DATOS EXTRAÍDOS POR IA</div>
                 <table>
-                    <tbody>
-                        <tr>
-                            <td>N° Orden Compra</td>
-                            <td><input type="text" id="inp-orden" placeholder="Auto-extraído" oninput="autoSave()"></td>
-                            <td>N° Factura</td>
-                            <td><input type="text" id="inp-factura" placeholder="Auto-extraído" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Fecha Oferta</td>
-                            <td><input type="text" id="inp-f-oferta" placeholder="DD/MM/YYYY" oninput="autoSave()"></td>
-                            <td>Fecha Fijación</td>
-                            <td><input type="text" id="inp-f-fijacion" placeholder="DD/MM/YYYY" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Bolsa NY (¢/lb)</td>
-                            <td><input type="text" id="inp-ny" placeholder="0.00" oninput="autoSave()"></td>
-                            <td>TRM ($)</td>
-                            <td><input type="text" id="inp-trm" placeholder="0.00" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Diferencial</td>
-                            <td><input type="text" id="inp-dif" placeholder="0" oninput="autoSave()"></td>
-                            <td>Retención</td>
-                            <td><input type="text" id="inp-ret" placeholder="0" oninput="updateKPI();autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Fecha Factura</td>
-                            <td><input type="text" id="inp-f-factura" placeholder="DD/MM/YYYY" oninput="autoSave()"></td>
-                            <td>Valor Total</td>
-                            <td><input type="text" id="inp-v-total" placeholder="0" oninput="updateKPI();autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Total a Pagar</td>
-                            <td><input type="text" id="inp-v-pagar" placeholder="0" oninput="updateKPI();autoSave()"></td>
-                            <td>Estado Final</td>
-                            <td><input type="text" id="inp-estado-final" placeholder="PAGADO/PENDIENTE" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Proveedor</td>
-                            <td><input type="text" id="inp-proveedor" placeholder="Nombre" oninput="autoSave()"></td>
-                            <td>Comprador</td>
-                            <td><input type="text" id="inp-comprador" placeholder="Empresa" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Cantidad</td>
-                            <td><input type="text" id="inp-cantidad" placeholder="Sacos/Kg" oninput="autoSave()"></td>
-                            <td>Precio Unitario</td>
-                            <td><input type="text" id="inp-precio-unit" placeholder="0.00" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Descripción</td>
-                            <td colspan="3"><input type="text" id="inp-descripcion" placeholder="Producto" oninput="autoSave()" style="width:100%;"></td>
-                        </tr>
-                        <tr>
-                            <td>Notas</td>
-                            <td colspan="3"><input type="text" id="inp-notas" placeholder="Observaciones" oninput="autoSave()" style="width:100%;"></td>
-                        </tr>
-                    </tbody>
+                    <tr>
+                        <td>Orden Compra</td><td><input type="text" id="inp-orden" oninput="autoSave()"></td>
+                        <td>N° Factura</td><td><input type="text" id="inp-factura" oninput="autoSave()"></td>
+                    </tr>
+                    <tr>
+                        <td>Fecha Oferta</td><td><input type="text" id="inp-f-oferta" oninput="autoSave()"></td>
+                        <td>Fecha Fijación</td><td><input type="text" id="inp-f-fijacion" oninput="autoSave()"></td>
+                    </tr>
+                    <tr>
+                        <td>Bolsa NY (¢/lb)</td><td><input type="text" id="inp-ny" oninput="updateKPI();autoSave()"></td>
+                        <td>TRM ($)</td><td><input type="text" id="inp-trm" oninput="updateKPI();autoSave()"></td>
+                    </tr>
+                    <tr>
+                        <td>Diferencial</td><td><input type="text" id="inp-dif" oninput="autoSave()"></td>
+                        <td>Retención</td><td><input type="text" id="inp-ret" oninput="updateKPI();autoSave()"></td>
+                    </tr>
+                    <tr>
+                        <td>Valor Factura</td><td><input type="text" id="inp-v-total" oninput="updateKPI();autoSave()"></td>
+                        <td>Total a Pagar</td><td><input type="text" id="inp-v-pagar" oninput="updateKPIs();autoSave()"></td>
+                    </tr>
+                    <tr>
+                        <td>Proveedor</td><td colspan="3"><input type="text" id="inp-prov" oninput="autoSave()"></td>
+                    </tr>
+                    <tr>
+                        <td>Descripción</td><td colspan="3"><input type="text" id="inp-desc" oninput="autoSave()"></td>
+                    </tr>
                 </table>
 
-                <!-- Bank Grid -->
                 <div class="bank-grid">
                     <div class="bank-card">
-                        <div class="bank-label" style="color:var(--blue);">SOPORTE 1</div>
-                        <input type="text" id="b1-ent" placeholder="Banco" oninput="autoSave()">
-                        <input type="text" id="b1-fec" placeholder="Fecha" oninput="autoSave()">
+                        <div class="bank-label" style="color:var(--blue)">SOPORTE 1</div>
+                        <input type="text" id="b1-e" placeholder="Banco" oninput="autoSave()">
+                        <input type="text" id="b1-f" placeholder="Fecha" style="margin-top:5px" oninput="autoSave()">
                     </div>
                     <div class="bank-card">
-                        <div class="bank-label" style="color:var(--blue);">SOPORTE 2</div>
-                        <input type="text" id="b2-ent" placeholder="Banco" oninput="autoSave()">
-                        <input type="text" id="b2-fec" placeholder="Fecha" oninput="autoSave()">
+                        <div class="bank-label" style="color:var(--blue)">SOPORTE 2</div>
+                        <input type="text" id="b2-e" placeholder="Banco" oninput="autoSave()">
+                        <input type="text" id="b2-f" placeholder="Fecha" style="margin-top:5px" oninput="autoSave()">
                     </div>
                     <div class="bank-card">
-                        <div class="bank-label" style="color:var(--green);">PAGO FINAL</div>
-                        <input type="text" id="b3-ent" placeholder="Banco Pago" oninput="autoSave()">
-                        <input type="text" id="b3-fec" placeholder="Fecha Pago" oninput="updateKPI();autoSave()">
+                        <div class="bank-label" style="color:var(--green)">PAGO FINAL</div>
+                        <input type="text" id="b3-e" placeholder="Banco" oninput="autoSave()">
+                        <input type="text" id="b3-f" placeholder="Fecha" style="margin-top:5px" oninput="autoSave()">
                     </div>
                 </div>
             </div>
 
-            <!-- Upload Box -->
+            <!-- CARGA -->
             <div class="upload-box" onclick="document.getElementById('file-inp').click()">
-                <i class="ti ti-cloud-upload" style="font-size:42px;color:var(--purple2);"></i>
-                <h3>Analizar con Inteligencia Artificial</h3>
-                <p>Sube PDFs o Imágenes — Extracción de datos de café automática</p>
-                <input type="file" id="file-inp" hidden multiple accept="image/*,application/pdf" onchange="analizarArchivo(this.files)">
+                <i class="ti ti-cloud-upload"></i>
+                <h3 style="margin:10px 0 5px">Cargar Documento</h3>
+                <p style="font-size:11px; color:var(--txt3)">Sube fotos o PDFs de órdenes y facturas. La IA ignorará filtros de seguridad.</p>
+                <input type="file" id="file-inp" hidden accept="image/*,application/pdf" onchange="analizarConIA(this.files)">
             </div>
-            <div id="file-list"></div>
         </div>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-// --- CONFIGURACIÓN ---
-const GEMINI_API_KEY = "AIzaSyCVQjRug7YyZhqybjzgI6XbGs0cdbk52zE";
+const GEMINI_KEY = "AIzaSyCVQjRug7YyZhqybjzgI6XbGs0cdbk52zE";
 const GS_URL = "https://script.google.com/macros/s/AKfycbzOtIoI-3ptjVRBIYTulGnc03sLLgrcYk3BKw9Zwp0T-lG67QiKwXNNHcqR9FpeJHIb/exec";
 
-let historial = JSON.parse(localStorage.getItem('doc_historial')) || [];
+let historial = JSON.parse(localStorage.getItem('doc_analytics_v1')) || [];
 let currentId = null;
 let saveTimer;
 
-const PROMPT_FULL = `Eres un experto en contabilidad de exportación de café. Analiza el documento y extrae exactamente este JSON:
-{
-  "orden_compra": "", "n_factura": "", "fecha_factura": "", "fecha_oferta": "", "fecha_fijacion": "",
-  "bolsa_ny": "", "trm": "", "diferencial": "", "valor_total": "", "retencion": "", "total_pagar": "",
-  "estado_final": "", "proveedor": "", "comprador": "", "cantidad": "", "precio_unitario": "",
-  "descripcion": "", "b1_ent": "", "b1_fec": "", "b2_ent": "", "b2_fec": "", "b3_ent": "", "b3_fec": "", "notas": ""
-}
-Solo devuelve el JSON sin formato Markdown ni texto extra.`;
-
-// Al iniciar, renderizar historial
 window.onload = renderHist;
 
-async function analizarArchivo(files) {
+async function analizarConIA(files) {
     if (!files.length) return;
-    currentId = Date.now();
     document.getElementById('ai-overlay').classList.add('visible');
+    currentId = Date.now();
 
     try {
         const file = files[0];
         const b64 = await toBase64(file);
         
-        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: PROMPT_FULL }, { inline_data: { mime_type: file.type || "image/jpeg", data: b64 } }] }]
+                contents: [{
+                    parts: [{ text: "Analiza este documento cafetero. Extrae en JSON: { orden_compra, n_factura, fecha_factura, fecha_oferta, fecha_fijacion, bolsa_ny, trm, diferencial, valor_total, retencion, total_pagar, proveedor, descripcion }. Responde solo el JSON puro." },
+                            { inline_data: { mime_type: file.type || "image/jpeg", data: b64 } }]
+                }],
+                safetySettings: [
+                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+                ]
             })
         });
 
-        const res = await resp.json();
+        const result = await response.json();
         
-        // CORRECCIÓN PARA UNDEFINED: Verificar respuesta antes de parsear
-        if (!res.candidates || !res.candidates[0]) {
-            throw new Error("La IA no pudo procesar este documento. Verifica la calidad de la imagen.");
+        if (!result.candidates || !result.candidates[0].content) {
+            throw new Error("Google bloqueó el archivo por seguridad. Intenta con una imagen más limpia.");
         }
 
-        const rawJson = res.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim();
-        const data = JSON.parse(rawJson);
+        const raw = result.candidates[0].content.parts[0].text;
+        const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
 
-        // Poblar campos
+        // Llenado masivo
         setV('inp-orden', data.orden_compra); setV('inp-factura', data.n_factura);
         setV('inp-f-oferta', data.fecha_oferta); setV('inp-f-fijacion', data.fecha_fijacion);
         setV('inp-ny', data.bolsa_ny); setV('inp-trm', data.trm);
         setV('inp-dif', data.diferencial); setV('inp-ret', data.retencion);
-        setV('inp-f-factura', data.fecha_factura); setV('inp-v-total', data.valor_total);
-        setV('inp-v-pagar', data.total_pagar); setV('inp-estado-final', data.estado_final);
-        setV('inp-proveedor', data.proveedor); setV('inp-comprador', data.comprador);
-        setV('inp-cantidad', data.cantidad); setV('inp-precio-unit', data.precio_unitario);
-        setV('inp-descripcion', data.descripcion); setV('inp-notas', data.notas);
-        setV('b1-ent', data.b1_ent); setV('b1-fec', data.b1_fec);
-        setV('b2-ent', data.b2_ent); setV('b2-fec', data.b2_fec);
-        setV('b3-ent', data.b3_ent); setV('b3-fec', data.b3_fec);
+        setV('inp-v-total', data.valor_total); setV('inp-v-pagar', data.total_pagar);
+        setV('inp-prov', data.proveedor); setV('inp-desc', data.descripcion);
 
-        document.getElementById('stat-docs').textContent = files.length;
         updateKPI();
-        
-        // Guardar y Sincronizar
-        saveAndSync();
+        saveAll();
 
     } catch (e) {
-        alert("ERROR: " + e.message);
+        alert("ERROR DE IA: " + e.message);
     } finally {
         document.getElementById('ai-overlay').classList.remove('visible');
     }
 }
 
-function toBase64(f) { return new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.readAsDataURL(f); }); }
 function setV(id, v) { document.getElementById(id).value = v || ''; }
 function getV(id) { return document.getElementById(id).value || ''; }
+function toBase64(f) { return new Promise(r => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = () => r(rd.result.split(',')[1]); }); }
 
-function capturar() {
-    return {
-        id: currentId, orden: getV('inp-orden'), factura: getV('inp-factura'),
-        fOferta: getV('inp-f-oferta'), fFijacion: getV('inp-f-fijacion'),
-        ny: getV('inp-ny'), trm: getV('inp-trm'), dif: getV('inp-dif'), ret: getV('inp-ret'),
-        total: getV('inp-v-total'), pagar: getV('inp-v-pagar'), estado: getV('inp-estado-final'),
-        proveedor: getV('inp-proveedor'), comprador: getV('inp-comprador'),
-        bancos: [{ent:getV('b1-ent'), fec:getV('b1-fec')}, {ent:getV('b2-ent'), fec:getV('b2-fec')}, {ent:getV('b3-ent'), fec:getV('b3-fec')}]
-    };
+function updateKPI() {
+    const t = getV('inp-v-total').replace(/[^0-9]/g, '');
+    const p = getV('inp-v-pagar').replace(/[^0-9]/g, '');
+    document.getElementById('stat-total').innerText = t ? '$' + Number(t).toLocaleString() : '$0';
+    document.getElementById('stat-pagar').innerText = p ? '$' + Number(p).toLocaleString() : '$0';
+    document.getElementById('stat-ny').innerText = getV('inp-ny') || '0';
+    document.getElementById('stat-trm').innerText = getV('inp-trm') || '0';
+    document.getElementById('stat-estado').innerText = "PROCESADO";
 }
 
-function saveAndSync() {
-    const data = capturar();
-    const idx = historial.findIndex(h => h.id === data.id);
+function saveAll() {
+    const data = {
+        id: currentId,
+        orden: getV('inp-orden'), factura: getV('inp-factura'),
+        total: getV('inp-v-total'), prov: getV('inp-prov'),
+        campos: {
+            fOferta: getV('inp-f-oferta'), fFijacion: getV('inp-f-fijacion'),
+            ny: getV('inp-ny'), trm: getV('inp-trm'), dif: getV('inp-dif'),
+            ret: getV('inp-ret'), pagar: getV('inp-v-pagar'), desc: getV('inp-desc'),
+            bancos: [
+                {e: getV('b1-e'), f: getV('b1-f')},
+                {e: getV('b2-e'), f: getV('b2-f')},
+                {e: getV('b3-e'), f: getV('b3-f')}
+            ]
+        }
+    };
+    const idx = historial.findIndex(h => h.id === currentId);
     if (idx > -1) historial[idx] = data; else historial.unshift(data);
-    localStorage.setItem('doc_historial', JSON.stringify(historial));
+    localStorage.setItem('doc_analytics_v1', JSON.stringify(historial));
     renderHist();
-    sync('SAVE', data);
+    syncCloud(data);
 }
 
 function autoSave() {
     if (!currentId) return;
     clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => saveAndSync(), 1500);
+    saveTimer = setTimeout(saveAll, 1000);
 }
 
 function renderHist() {
     const c = document.getElementById('historial-container');
-    if (historial.length === 0) {
-        c.innerHTML = '<div style="padding:20px;font-size:11px;color:var(--txt3);text-align:center;">Sin registros</div>';
-        return;
-    }
     c.innerHTML = historial.map(h => `
         <div class="history-item ${currentId === h.id ? 'active' : ''}" onclick="cargar(${h.id})">
             <i class="ti ti-trash delete-btn" onclick="borrarRegistro(${h.id}, event)"></i>
             <div class="h-name">${h.orden || 'Sin Orden'}</div>
-            <div class="h-meta"><span>$${Number(h.total || 0).toLocaleString()}</span> <span>${h.estado || 'PEND.'}</span></div>
+            <div class="h-meta"><span>${h.prov || 'S/N'}</span> <span>$${Number(h.total || 0).toLocaleString()}</span></div>
         </div>
     `).join('');
 }
@@ -501,63 +313,38 @@ function cargar(id) {
     if (!h) return;
     currentId = h.id;
     setV('inp-orden', h.orden); setV('inp-factura', h.factura);
-    setV('inp-v-total', h.total); setV('inp-v-pagar', h.pagar);
-    setV('inp-estado-final', h.estado); setV('inp-proveedor', h.proveedor);
-    setV('b1-ent', h.bancos[0].ent); setV('b1-fec', h.bancos[0].fec);
-    setV('b2-ent', h.bancos[1].ent); setV('b2-fec', h.bancos[1].fec);
-    setV('b3-ent', h.bancos[2].ent); setV('b3-fec', h.bancos[2].fec);
+    setV('inp-v-total', h.total); setV('inp-prov', h.prov);
+    setV('inp-f-oferta', h.campos.fOferta); setV('inp-f-fijacion', h.campos.fFijacion);
+    setV('inp-ny', h.campos.ny); setV('inp-trm', h.campos.trm);
+    setV('inp-dif', h.campos.dif); setV('inp-ret', h.campos.ret);
+    setV('inp-v-pagar', h.campos.pagar); setV('inp-desc', h.campos.desc);
+    setV('b1-e', h.campos.bancos[0].e); setV('b1-f', h.campos.bancos[0].f);
+    setV('b2-e', h.campos.bancos[1].e); setV('b2-f', h.campos.bancos[1].f);
+    setV('b3-e', h.campos.bancos[2].e); setV('b3-f', h.campos.bancos[2].f);
     updateKPI(); renderHist();
 }
 
-async function borrarRegistro(id, e) {
-    e.stopPropagation();
-    if (!confirm('¿Eliminar?')) return;
-    historial = historial.filter(x => x.id !== id);
-    localStorage.setItem('doc_historial', JSON.stringify(historial));
-    if (currentId === id) resetForm(); else renderHist();
-    await sync('DELETE', { id: id });
-}
-
-function updateKPI() {
-    const t = getV('inp-v-total').replace(/[^0-9]/g, '');
-    const p = getV('inp-v-pagar').replace(/[^0-9]/g, '');
-    document.getElementById('stat-val').textContent = t ? '$' + Number(t).toLocaleString() : '$0';
-    document.getElementById('stat-pay').textContent = p ? '$' + Number(p).toLocaleString() : '$0';
-    document.getElementById('stat-pago').textContent = getV('b3-fec') || '--/--/--';
-    document.getElementById('stat-estado').textContent = getV('inp-estado-final') || 'ANALIZADO';
-}
-
-async function sync(action, data) {
-    data.action = action;
-    setSyncUI('SINCRONIZANDO...', 'var(--amber)', true);
-    try {
-        await fetch(GS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-        setSyncUI('SISTEMA ACTIVO', 'var(--green)', false);
-    } catch (e) { setSyncUI('ERROR RED', 'var(--red)', false); }
-}
-
-function setSyncUI(t, c, s) {
-    document.getElementById('sync-label').innerText = t;
-    document.getElementById('sync-label').style.color = c;
-    document.getElementById('sync-dot').style.background = c;
-    s ? document.getElementById('sync-dot').classList.add('spin') : document.getElementById('sync-dot').classList.remove('spin');
+function syncCloud(data) {
+    document.getElementById('sync-dot').classList.add('spin');
+    fetch(GS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({...data, action:'SAVE'}) })
+    .then(() => { document.getElementById('sync-dot').classList.remove('spin'); });
 }
 
 function resetForm() { location.reload(); }
 
 function exportExcel() {
-    const d = capturar();
-    const ws = XLSX.utils.json_to_sheet([d]);
+    const ws = XLSX.utils.json_to_sheet(historial.map(h => ({ Orden: h.orden, Proveedor: h.prov, Total: h.total })));
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Reporte");
-    XLSX.writeFile(wb, `Reporte_${d.orden || 'Doc'}.xlsx`);
+    XLSX.utils.book_append_sheet(wb, ws, "Historial");
+    XLSX.writeFile(wb, "DocAnalytics_Pro.xlsx");
 }
 
-function borrarTodo() {
-    if (confirm('¿Borrar todo de la nube?')) {
-        localStorage.clear();
-        location.reload();
-    }
+function borrarRegistro(id, e) {
+    e.stopPropagation();
+    if (!confirm('¿Eliminar?')) return;
+    historial = historial.filter(x => x.id !== id);
+    localStorage.setItem('doc_analytics_v1', JSON.stringify(historial));
+    location.reload();
 }
 </script>
 </body>
