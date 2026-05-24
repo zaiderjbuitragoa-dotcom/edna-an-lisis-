@@ -3,987 +3,335 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DocAnalytics Pro - Gestión Gerencial</title>
+    <title>DocAnalytics Pro - Gestión Gerencial Real</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;600;700;800&display=swap');
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --bg:     #04050a;
-            --bg2:    #080d14;
-            --bg3:    #0d1220;
-            --bg4:    #141b2d;
-            --bg5:    #1a2235;
-            --border: #1f2d45;
-            --border2:#2a3d5c;
-            --border3:#3a5278;
-            --txt:    #d4ddf0;
-            --txt2:   #7a8faa;
-            --txt3:   #445570;
-            --purple: #6c63ff;
-            --purple2:#4d45cc;
-            --purple3:#1e1a5e;
-            --green:  #00e5a0;
-            --green2: #00b87e;
-            --red:    #ff4d6a;
-            --amber:  #ffb340;
-            --blue:   #3a9fff;
-            --cyan:   #00d4ff;
+        *{box-sizing:border-box;margin:0;padding:0;}
+        :root{
+            --bg:#04050a;--bg2:#080d14;--bg3:#0d1220;--bg4:#141b2d;--bg5:#1a2235;
+            --border:#1f2d45;--border2:#2a3d5c;--border3:#3a5278;
+            --txt:#d4ddf0;--txt2:#7a8faa;--txt3:#445570;
+            --purple:#6c63ff;--purple2:#4d45cc;--purple3:#1e1a5e;
+            --green:#00e5a0;--green2:#00b87e;
+            --red:#ff4d6a;--amber:#ffb340;--blue:#3a9fff;--cyan:#00d4ff;
             --font: 'IBM Plex Sans', system-ui, sans-serif;
             --mono: 'IBM Plex Mono', monospace;
-            --r:  6px;
-            --rl: 10px;
+            --r:6px;--rl:10px;
         }
+        html,body{height:100%;}
+        body{background:var(--bg);color:var(--txt);font-family:var(--font);overflow:hidden;}
 
-        html, body { height: 100%; overflow: hidden; }
-        body { background: var(--bg); color: var(--txt); font-family: var(--font); }
+        .wrap{display:flex;height:100vh;max-width:1680px;margin:0 auto;}
 
-        /* ─── LAYOUT ─── */
-        .wrap { display: flex; height: 100vh; }
+        /* SIDEBAR */
+        .sidebar{
+            width:270px;flex-shrink:0;
+            background:var(--bg2);
+            border-right:1px solid var(--border);
+            display:flex;flex-direction:column;
+            overflow:hidden;
+        }
+        .logo{
+            padding:22px 20px;border-bottom:1px solid var(--border);
+            display:flex;align-items:center;gap:12px;
+        }
+        .logo-icon{
+            width:38px;height:38px;
+            background:linear-gradient(135deg,var(--purple),var(--cyan));
+            border-radius:10px;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .logo-name{font-size:13px;font-weight:800;letter-spacing:2px;color:#fff;font-family:var(--mono);}
+        
+        .btn-nuevo{
+            display:flex;align-items:center;gap:10px;
+            margin:15px 12px;padding:10px 14px;
+            background:var(--purple3);border:1px solid var(--purple2);
+            border-radius:var(--r);color:var(--txt);font-size:12px;font-weight:700;
+            cursor:pointer;transition:.2s;
+        }
+        .btn-nuevo:hover{background:var(--purple2);}
 
-        /* ─── SIDEBAR ─── */
-        .sidebar {
-            width: 270px; flex-shrink: 0;
-            background: var(--bg2); border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; overflow: hidden;
+        .history-section{flex:1;overflow-y:auto;padding:10px;}
+        .history-item{
+            padding:12px; background:var(--bg4); border-radius:var(--r);
+            margin-bottom:8px; border:1px solid var(--border);
+            cursor:pointer; transition:.2s;
         }
-        .logo {
-            padding: 22px 20px; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 12px; flex-shrink: 0;
-        }
-        .logo-icon {
-            width: 38px; height: 38px; flex-shrink: 0;
-            background: linear-gradient(135deg, var(--purple), var(--cyan));
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .logo-name { font-size: 13px; font-weight: 800; letter-spacing: 2px; color: #fff; font-family: var(--mono); }
-        .logo-sub  { font-size: 9px; color: var(--txt3); font-family: var(--mono); margin-top: 2px; }
+        .history-item:hover{border-color:var(--purple);}
+        .h-title{font-size:11px; font-weight:bold; color:#fff; font-family:var(--mono);}
+        .h-sub{font-size:9px; color:var(--txt3); margin-top:4px;}
 
-        .btn-nuevo {
-            display: flex; align-items: center; gap: 10px;
-            margin: 15px 12px; padding: 10px 14px;
-            background: var(--purple3); border: 1px solid var(--purple2);
-            border-radius: var(--r); color: var(--txt); font-size: 12px; font-weight: 700;
-            cursor: pointer; transition: .2s; letter-spacing: .5px; flex-shrink: 0;
+        /* MAIN */
+        .main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+        .topbar{
+            display:flex;align-items:center;justify-content:space-between;
+            padding:14px 28px; background:var(--bg2); border-bottom:1px solid var(--border);
         }
-        .btn-nuevo:hover { background: var(--purple2); border-color: var(--purple); }
+        .content{flex:1;overflow-y:auto;padding:22px 28px;}
 
-        .sec-label {
-            font-size: 9px; color: var(--txt3); font-weight: 800;
-            padding: 10px 16px 4px; letter-spacing: 1.5px; font-family: var(--mono);
-            flex-shrink: 0;
+        /* KPIs */
+        .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+        .kpi{
+            background:var(--bg3); border:1px solid var(--border);
+            border-top:2px solid var(--border2); padding:14px 16px; border-radius:var(--rl);
         }
+        .kpi-lbl{font-size:9px;color:var(--txt3);font-weight:700;margin-bottom:6px;letter-spacing:1.5px;font-family:var(--mono);}
+        .kpi-n{font-size:17px;font-weight:800;color:#fff;font-family:var(--mono);}
 
-        .history-section { flex: 1; overflow-y: auto; }
-        .history-item {
-            position: relative; padding: 12px 16px;
-            border-bottom: 1px solid #ffffff04;
-            cursor: pointer; transition: .15s;
-            border-left: 3px solid transparent;
+        /* FORM PANEL */
+        .panel{
+            background:var(--bg3); border:1px solid var(--border);
+            border-radius:var(--rl); padding:22px; margin-bottom:18px;
         }
-        .history-item:hover { background: var(--bg4); }
-        .history-item.active { background: var(--purple3); border-left-color: var(--purple); }
-        .h-name { font-size: 12px; font-weight: 700; color: #fff; font-family: var(--mono); }
-        .h-meta  { font-size: 10px; color: var(--txt3); margin-top: 4px; display: flex; justify-content: space-between; }
-        .h-status{ font-size: 9px; margin-top: 4px; color: var(--green); font-family: var(--mono); }
-        .delete-btn {
-            position: absolute; top: 12px; right: 12px;
-            color: var(--txt3); cursor: pointer; transition: .2s; font-size: 14px;
+        table{width:100%;border-collapse:collapse;}
+        th{text-align:left;color:var(--txt3);font-size:9px;padding:10px 12px;border-bottom:1px solid var(--border);font-family:var(--mono);}
+        td{padding:8px 10px;border-bottom:1px solid #ffffff04;font-size:13px;}
+        input{
+            background:var(--bg4); border:1px solid var(--border);
+            color:var(--txt); padding:9px 12px; border-radius:var(--r);
+            width:100%; font-size:12px; font-family:var(--mono); transition:.2s;
         }
-        .delete-btn:hover { color: var(--red); }
+        input:focus{border-color:var(--purple); outline:none;}
 
-        .sidebar-footer { padding: 14px; border-top: 1px solid var(--border); flex-shrink: 0; }
-        .btn-danger {
-            width: 100%; padding: 9px; background: transparent;
-            color: var(--red); border: 1px solid var(--red);
-            border-radius: var(--r); cursor: pointer; font-size: 11px; font-weight: 700;
-            letter-spacing: 1px; transition: .2s;
+        /* UPLOAD */
+        .upload-box{
+            border:2px dashed var(--border2); padding:40px; text-align:center;
+            border-radius:var(--rl); background:var(--bg3); cursor:pointer; transition:.3s;
         }
-        .btn-danger:hover { background: var(--red); color: #000; }
+        .upload-box:hover{border-color:var(--cyan); background:var(--bg4);}
 
-        /* ─── MAIN ─── */
-        .main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
-        .topbar {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 28px;
-            background: var(--bg2); border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
+        /* OVERLAY */
+        #ai-overlay{
+            display:none; position:fixed; inset:0; z-index:999;
+            background:#04050acc; backdrop-filter:blur(6px);
+            align-items:center; justify-content:center; flex-direction:column; gap:20px;
         }
-        .sync-pill {
-            display: flex; align-items: center; gap: 7px;
-            font-size: 10px; font-weight: 700; font-family: var(--mono); letter-spacing: 1px;
+        #ai-overlay.visible{display:flex;}
+        .ai-spinner{
+            width:60px;height:60px; border:3px solid var(--border2);
+            border-top-color:var(--cyan); border-radius:50%;
+            animation:spin 0.8s linear infinite;
         }
-        .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); transition: .3s; }
-        @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
-        .sync-dot.spin { animation: pulse 1s infinite; }
+        @keyframes spin{to{transform:rotate(360deg);}}
 
-        .btn-export {
-            background: var(--green); color: #000; border: none;
-            padding: 9px 20px; border-radius: var(--r);
-            font-weight: 800; font-size: 11px; letter-spacing: 1px;
-            cursor: pointer; transition: .2s;
+        .btn-export{
+            background:var(--green); color:#000; border:none;
+            padding:9px 20px; border-radius:var(--r);
+            font-weight:800; font-size:11px; cursor:pointer;
         }
-        .btn-export:hover { background: var(--green2); }
-
-        .content { flex: 1; overflow-y: auto; padding: 22px 28px; }
-
-        /* ─── KPI ROW ─── */
-        .kpi-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 20px; }
-        .kpi {
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-top: 2px solid var(--border2);
-            padding: 14px 16px; border-radius: var(--rl); transition: .2s;
-        }
-        .kpi-lbl { font-size: 9px; color: var(--txt3); font-weight: 700; margin-bottom: 6px; letter-spacing: 1.5px; font-family: var(--mono); }
-        .kpi-n   { font-size: 17px; font-weight: 800; color: #fff; font-family: var(--mono); }
-
-        /* ─── PANEL ─── */
-        .panel {
-            background: var(--bg3); border: 1px solid var(--border);
-            border-radius: var(--rl); padding: 22px; margin-bottom: 18px;
-        }
-        .panel-hdr {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 18px;
-        }
-        .panel-title {
-            font-weight: 800; font-size: 12px; letter-spacing: 1px;
-            font-family: var(--mono); display: flex; align-items: center; gap: 8px;
-        }
-
-        table { width: 100%; border-collapse: collapse; }
-        th {
-            text-align: left; color: var(--txt3); font-size: 9px;
-            padding: 10px 12px; border-bottom: 1px solid var(--border);
-            letter-spacing: 1px; font-family: var(--mono); font-weight: 700;
-        }
-        td { padding: 8px 10px; border-bottom: 1px solid #ffffff04; font-size: 13px; }
-        td:first-child, td:nth-child(3) { color: var(--txt2); font-size: 11px; font-family: var(--mono); white-space: nowrap; }
-
-        input {
-            background: var(--bg4); border: 1px solid var(--border);
-            color: var(--txt); padding: 9px 12px; border-radius: var(--r);
-            width: 100%; font-size: 12px; font-family: var(--mono); transition: .2s;
-        }
-        input:focus { border-color: var(--purple); outline: none; background: var(--bg5); }
-        input::placeholder { color: var(--txt3); }
-
-        /* ─── BANK GRID ─── */
-        .bank-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 18px; }
-        .bank-card {
-            background: var(--bg4); padding: 14px;
-            border-radius: var(--r); border: 1px solid var(--border2);
-        }
-        .bank-label { font-size: 9px; font-weight: 800; margin-bottom: 8px; letter-spacing: 1.5px; font-family: var(--mono); }
-        .bank-card input + input { margin-top: 6px; }
-
-        /* ─── UPLOAD BOX ─── */
-        .upload-box {
-            border: 2px dashed var(--border2); padding: 36px 40px; text-align: center;
-            border-radius: var(--rl); background: var(--bg3); cursor: pointer; transition: .3s;
-        }
-        .upload-box:hover { border-color: var(--purple); background: var(--bg4); }
-        .upload-box h3 { margin-top: 10px; font-size: 14px; }
-        .upload-box p  { font-size: 11px; color: var(--txt3); margin-top: 4px; }
-
-        /* ─── AI LOADING OVERLAY ─── */
-        #ai-overlay {
-            display: none; position: fixed; inset: 0; z-index: 999;
-            background: #04050acc; backdrop-filter: blur(6px);
-            align-items: center; justify-content: center;
-            flex-direction: column; gap: 20px;
-        }
-        #ai-overlay.visible { display: flex; }
-        .ai-spinner {
-            width: 60px; height: 60px;
-            border: 3px solid var(--border2);
-            border-top-color: var(--cyan);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .ai-msg       { font-size: 13px; font-family: var(--mono); color: var(--cyan); letter-spacing: 1px; }
-        .ai-sub       { font-size: 10px; font-family: var(--mono); color: var(--txt3); }
-        .ai-files-progress { font-size: 11px; font-family: var(--mono); color: var(--txt2); text-align: center; max-width: 400px; }
-
-        /* ─── FILE CARDS ─── */
-        .file-card {
-            display: flex; align-items: center; gap: 10px;
-            background: var(--bg4); padding: 10px 14px;
-            border-radius: var(--r); margin-top: 8px;
-            border: 1px solid var(--border); font-size: 11px; font-family: var(--mono);
-        }
-        .file-card .fc-status { margin-left: auto; font-size: 9px; font-weight: 700; color: var(--amber); letter-spacing: 1px; }
-        .file-card .fc-status.ok  { color: var(--green); }
-        .file-card .fc-status.err { color: var(--red); }
-
-        /* ─── AI LOG ─── */
-        #ai-log {
-            background: var(--bg4); border: 1px solid var(--border);
-            border-radius: var(--r); padding: 12px; margin-top: 14px;
-            font-size: 10px; font-family: var(--mono); color: var(--cyan);
-            max-height: 140px; overflow-y: auto; display: none;
-        }
-        .log-entry      { padding: 2px 0; color: var(--txt2); }
-        .log-entry.ok   { color: var(--green); }
-        .log-entry.err  { color: var(--red); }
-        .log-entry.info { color: var(--cyan); }
-
-        .proceso-badge {
-            color: var(--cyan); font-weight: 800; font-size: 11px;
-            font-family: var(--mono); letter-spacing: 1px;
-        }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
     </style>
 </head>
 <body>
 
-<!-- AI Loading Overlay -->
 <div id="ai-overlay">
     <div class="ai-spinner"></div>
-    <div class="ai-msg" id="ai-msg-main">ANALIZANDO DOCUMENTOS...</div>
-    <div class="ai-files-progress" id="ai-files-progress"></div>
-    <div class="ai-sub">La IA está extrayendo todos los datos de tus archivos</div>
+    <div style="color:var(--cyan); font-family:var(--mono); letter-spacing:2px;">INTELIGENCIA ARTIFICIAL ANALIZANDO...</div>
+    <div id="ai-status" style="font-size:11px; color:var(--txt2)">Leyendo documentos y extrayendo valores...</div>
 </div>
 
 <div class="wrap">
-    <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="logo">
-            <div class="logo-icon"><i class="ti ti-report-analytics" style="font-size:20px;color:#fff;"></i></div>
+            <div class="logo-icon"><i class="ti ti-report-analytics" style="font-size:22px;color:#fff;"></i></div>
             <div>
                 <div class="logo-name">DOC ANALYTICS</div>
-                <div class="logo-sub">GESTIÓN GERENCIAL</div>
+                <div style="font-size:8px; color:var(--txt3)">SISTEMA PROFESIONAL</div>
             </div>
         </div>
-
-        <div class="btn-nuevo" onclick="resetForm()">
-            <i class="ti ti-plus"></i> NUEVO ANÁLISIS
-        </div>
-
-        <div class="sec-label">HISTORIAL DE CARGA</div>
-        <div class="history-section" id="historial-container">
-            <div style="padding:20px;font-size:11px;color:var(--txt3);text-align:center;font-family:var(--mono);">Sin registros</div>
-        </div>
-
-        <div class="sidebar-footer">
-            <button class="btn-danger" onclick="borrarTodo()">⚠ BORRAR TODO EL HISTORIAL</button>
-        </div>
+        <div class="btn-nuevo" onclick="location.reload()"><i class="ti ti-plus"></i> NUEVO ANÁLISIS</div>
+        <div style="padding:15px 20px 5px; font-size:9px; color:var(--txt3); font-family:var(--mono);">HISTORIAL DE CARGA</div>
+        <div class="history-section" id="historial"></div>
     </div>
 
-    <!-- MAIN -->
     <div class="main">
         <div class="topbar">
-            <div class="sync-pill">
-                <div class="sync-dot" id="sync-dot"></div>
-                <span id="sync-label" style="color:var(--green);">SISTEMA ACTIVO</span>
+            <div style="display:flex; align-items:center; gap:8px; font-size:10px; color:var(--green); font-family:var(--mono)">
+                <div style="width:8px; height:8px; background:var(--green); border-radius:50%"></div> CONEXIÓN IA ACTIVA
             </div>
             <button class="btn-export" onclick="exportExcel()">↓ EXPORTAR EXCEL</button>
         </div>
 
         <div class="content">
-            <!-- KPI Row -->
             <div class="kpi-row">
-                <div class="kpi" style="border-top-color:var(--purple)">
-                    <div class="kpi-lbl">DOCUMENTOS</div>
-                    <div class="kpi-n" id="stat-docs">0</div>
-                </div>
-                <div class="kpi" style="border-top-color:var(--green)">
-                    <div class="kpi-lbl">VALOR FACTURA</div>
-                    <div class="kpi-n" id="stat-val">$0</div>
-                </div>
-                <div class="kpi" style="border-top-color:var(--blue)">
-                    <div class="kpi-lbl">ÚLTIMO PAGO</div>
-                    <div class="kpi-n" id="stat-pago">--/--/--</div>
-                </div>
-                <div class="kpi" style="border-top-color:var(--cyan)">
-                    <div class="kpi-lbl">TOTAL A PAGAR</div>
-                    <div class="kpi-n" id="stat-pay">$0</div>
-                </div>
-                <div class="kpi" style="border-top-color:var(--amber)">
-                    <div class="kpi-lbl">ESTADO</div>
-                    <div class="kpi-n" id="stat-estado" style="font-size:11px;color:var(--amber);">SIN DATOS</div>
-                </div>
+                <div class="kpi"><div class="kpi-lbl">VALOR FACTURA</div><div class="kpi-n" id="kpi-total">$0</div></div>
+                <div class="kpi"><div class="kpi-lbl">A PAGAR</div><div class="kpi-n" id="kpi-pagar" style="color:var(--cyan)">$0</div></div>
+                <div class="kpi"><div class="kpi-lbl">TRM</div><div class="kpi-n" id="kpi-trm">0</div></div>
+                <div class="kpi"><div class="kpi-lbl">BOLSA NY</div><div class="kpi-n" id="kpi-ny">0</div></div>
+                <div class="kpi"><div class="kpi-lbl">ESTADO</div><div class="kpi-n" id="kpi-estado" style="font-size:11px; color:var(--amber)">SIN DATOS</div></div>
             </div>
 
-            <!-- Datos Extraídos -->
             <div class="panel">
-                <div class="panel-hdr">
-                    <div class="panel-title"><i class="ti ti-file-text"></i> DATOS REALES EXTRAÍDOS POR IA</div>
-                    <div class="proceso-badge" id="label-proceso"></div>
-                </div>
+                <div style="margin-bottom:15px; font-weight:800; font-size:12px; font-family:var(--mono); color:var(--cyan)">DATOS EXTRAÍDOS POR IA</div>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>CONCEPTO</th><th>VALOR EN DOCUMENTO</th>
-                            <th>CONCEPTO</th><th>VALOR EN DOCUMENTO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>N° Orden Compra</td>
-                            <td><input type="text" id="inp-orden"     placeholder="Auto-extraído" oninput="autoSave()"></td>
-                            <td>N° Factura</td>
-                            <td><input type="text" id="inp-factura"   placeholder="Auto-extraído" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Fecha Oferta</td>
-                            <td><input type="text" id="inp-f-oferta"   placeholder="Auto-extraído" oninput="autoSave()"></td>
-                            <td>Fecha Fijación</td>
-                            <td><input type="text" id="inp-f-fijacion" placeholder="Auto-extraído" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Bolsa NY (¢/lb)</td>
-                            <td><input type="text" id="inp-ny"  placeholder="Auto-extraído" oninput="autoSave()"></td>
-                            <td>TRM</td>
-                            <td><input type="text" id="inp-trm" placeholder="Auto-extraído" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Diferencial</td>
-                            <td><input type="text" id="inp-dif" placeholder="Auto-extraído" oninput="autoSave()"></td>
-                            <td>Retención</td>
-                            <td><input type="text" id="inp-ret" placeholder="Auto-extraído" oninput="updateKPI();autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Fecha Factura</td>
-                            <td><input type="text" id="inp-f-factura" placeholder="Auto-extraído" oninput="autoSave()"></td>
-                            <td>Valor Total</td>
-                            <td><input type="text" id="inp-v-total"   placeholder="Auto-extraído" oninput="updateKPI();autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Total a Pagar</td>
-                            <td><input type="text" id="inp-v-pagar"     placeholder="Auto-extraído" oninput="updateKPI();autoSave()"></td>
-                            <td>Estado Final</td>
-                            <td><input type="text" id="inp-estado-final" placeholder="Auto-extraído" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Proveedor / Vendedor</td>
-                            <td><input type="text" id="inp-proveedor" placeholder="Auto-extraído" oninput="autoSave()"></td>
-                            <td>Comprador / Empresa</td>
-                            <td><input type="text" id="inp-comprador"  placeholder="Auto-extraído" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Cantidad / Sacos</td>
-                            <td><input type="text" id="inp-cantidad"    placeholder="Auto-extraído" oninput="autoSave()"></td>
-                            <td>Precio Unitario</td>
-                            <td><input type="text" id="inp-precio-unit" placeholder="Auto-extraído" oninput="autoSave()"></td>
-                        </tr>
-                        <tr>
-                            <td>Descripción Producto</td>
-                            <td colspan="3"><input type="text" id="inp-descripcion" placeholder="Auto-extraído" oninput="autoSave()" style="width:100%;"></td>
-                        </tr>
-                        <tr>
-                            <td>Observaciones / Notas</td>
-                            <td colspan="3"><input type="text" id="inp-notas" placeholder="Auto-extraído" oninput="autoSave()" style="width:100%;"></td>
-                        </tr>
-                    </tbody>
+                    <tr>
+                        <td width="20%">Orden Compra</td><td><input type="text" id="inp-orden"></td>
+                        <td width="20%">N° Factura</td><td><input type="text" id="inp-factura"></td>
+                    </tr>
+                    <tr>
+                        <td>Fecha Oferta</td><td><input type="text" id="inp-f-oferta"></td>
+                        <td>Fecha Fijación</td><td><input type="text" id="inp-f-fijacion"></td>
+                    </tr>
+                    <tr>
+                        <td>Bolsa NY (¢/lb)</td><td><input type="text" id="inp-ny"></td>
+                        <td>TRM ($)</td><td><input type="text" id="inp-trm"></td>
+                    </tr>
+                    <tr>
+                        <td>Diferencial</td><td><input type="text" id="inp-dif"></td>
+                        <td>Retención</td><td><input type="text" id="inp-ret"></td>
+                    </tr>
+                    <tr>
+                        <td>Valor Total</td><td><input type="text" id="inp-v-total" oninput="updateKPIs()"></td>
+                        <td>Total a Pagar</td><td><input type="text" id="inp-v-pagar" oninput="updateKPIs()"></td>
+                    </tr>
+                    <tr>
+                        <td>Proveedor</td><td colspan="3"><input type="text" id="inp-proveedor"></td>
+                    </tr>
+                    <tr>
+                        <td>Descripción</td><td colspan="3"><input type="text" id="inp-descripcion"></td>
+                    </tr>
                 </table>
-
-                <!-- Bank Grid -->
-                <div class="bank-grid">
-                    <div class="bank-card">
-                        <div class="bank-label" style="color:var(--blue);">SOPORTE 1</div>
-                        <input type="text" id="b1-ent" placeholder="Banco / Entidad" oninput="autoSave()">
-                        <input type="text" id="b1-fec" placeholder="Fecha soporte"   oninput="autoSave()">
-                    </div>
-                    <div class="bank-card">
-                        <div class="bank-label" style="color:var(--blue);">SOPORTE 2</div>
-                        <input type="text" id="b2-ent" placeholder="Banco / Entidad" oninput="autoSave()">
-                        <input type="text" id="b2-fec" placeholder="Fecha soporte"   oninput="autoSave()">
-                    </div>
-                    <div class="bank-card">
-                        <div class="bank-label" style="color:var(--green);">PAGO FINAL</div>
-                        <input type="text" id="b3-ent" placeholder="Banco Pago" oninput="autoSave()">
-                        <input type="text" id="b3-fec" placeholder="Fecha Pago" oninput="updateKPI();autoSave()">
-                    </div>
-                </div>
             </div>
 
-            <!-- Upload Box -->
-            <div class="upload-box" id="drop-zone"
-                 onclick="document.getElementById('file-inp').click()"
-                 ondragover="event.preventDefault();this.style.borderColor='var(--cyan)'"
-                 ondragleave="this.style.borderColor='var(--border2)'"
-                 ondrop="handleDrop(event)">
-                <i class="ti ti-cloud-upload" style="font-size:42px;color:var(--purple2);"></i>
-                <h3>Analizar Archivos con Inteligencia Artificial</h3>
-                <p>Sube PDFs o Imágenes — la IA extrae TODOS los datos automáticamente</p>
-                <p style="margin-top:6px;font-size:10px;color:var(--border3);">Arrastra y suelta o haz clic · PDF, PNG, JPG, JPEG</p>
-                <input type="file" id="file-inp" hidden multiple accept=".pdf,.png,.jpg,.jpeg"
-                       onchange="analizarArchivo(this.files)">
+            <div class="upload-box" onclick="document.getElementById('file-inp').click()">
+                <i class="ti ti-cloud-upload" style="font-size:48px; color:var(--purple)"></i>
+                <h3 style="margin-top:10px;">Analizar Documentos con IA</h3>
+                <p style="font-size:11px; color:var(--txt3); margin-top:5px;">Sube Ordenes, Facturas o Comprobantes (PDF, PNG, JPG)</p>
+                <input type="file" id="file-inp" hidden multiple accept="image/*,application/pdf" onchange="analizarConIA(this.files)">
             </div>
-
-            <div id="file-list"  style="margin-top:4px;"></div>
-            <div id="ai-log"></div>
+            <div id="file-list" style="margin-top:15px;"></div>
         </div>
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-// ═══════════════════════════════════════════════════════
-//  CONFIGURACIÓN
-// ═══════════════════════════════════════════════════════
-const CLAUDE_MODEL = "claude-sonnet-4-20250514";
+// --- CONFIGURACIÓN ---
+const GEMINI_API_KEY = "AIzaSyBWNmkjBTNuhJtZyyGFEDm6PngTzWQnhrA";
+const MODEL_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
-// Google Sheets endpoint (optional sync)
-const GS_URL = "https://script.google.com/macros/s/AKfycbzOtIoI-3ptjVRBIYTulGnc03sLLgrcYk3BKw9Zwp0T-lG67QiKwXNNHcqR9FpeJHIb/exec";
-
-// ═══════════════════════════════════════════════════════
-//  ESTADO GLOBAL
-// ═══════════════════════════════════════════════════════
-let historial  = JSON.parse(localStorage.getItem('dap_historial') || '[]');
-let currentId  = null;
-let saveTimer;
-
-// ═══════════════════════════════════════════════════════
-//  PROMPT DE EXTRACCIÓN
-// ═══════════════════════════════════════════════════════
-const EXTRACTION_PROMPT = `Eres un asistente experto en análisis de documentos comerciales colombianos relacionados con compraventa de café y productos agropecuarios.
-Analiza TODOS los documentos adjuntos (puede ser una oferta mercantil, orden de compra, factura de venta, conformidad de pago, aceptación de orden, u otro documento comercial).
-
-Extrae TODA la información disponible y responde ÚNICAMENTE con un objeto JSON válido con esta estructura exacta. No incluyas texto adicional, ni markdown, ni backticks, ni comentarios — SOLO el JSON puro:
-
+const PROMPT_IA = `Actúa como un experto contable en café. Analiza los documentos y extrae estos datos en un formato JSON puro:
 {
   "orden_compra": "",
   "n_factura": "",
-  "fecha_factura": "",
   "fecha_oferta": "",
   "fecha_fijacion": "",
   "bolsa_ny": "",
   "trm": "",
   "diferencial": "",
-  "valor_total": "",
   "retencion": "",
+  "valor_total": "",
   "total_pagar": "",
-  "estado_final": "",
   "proveedor": "",
-  "comprador": "",
-  "cantidad": "",
-  "precio_unitario": "",
-  "descripcion_producto": "",
-  "banco_soporte1": "",
-  "fecha_soporte1": "",
-  "banco_soporte2": "",
-  "fecha_soporte2": "",
-  "banco_pago_final": "",
-  "fecha_pago_final": "",
-  "notas": ""
+  "descripcion": "",
+  "estado_documento": "PAGADO/PENDIENTE"
 }
+Reglas: Extrae números sin puntos de miles. Si no existe un dato, deja vacío. Solo devuelve el JSON.`;
 
-REGLAS CRÍTICAS:
-- "orden_compra": número PER-XXXX-XX o similar
-- "n_factura": número(s) de factura separados por coma si hay varios (FV-XXX, CHA-XXX, CMAA-XXX, etc.)
-- "fecha_factura": fecha de emisión de la factura en formato DD/MM/YYYY
-- "fecha_oferta": fecha de la oferta mercantil en formato DD/MM/YYYY
-- "fecha_fijacion": fecha de fijación del precio en formato DD/MM/YYYY
-- "bolsa_ny": precio bolsa New York en centavos de dólar por libra (ej: "125.50 ¢/lb")
-- "trm": tasa de cambio USD/COP (ej: "4250.00")
-- "diferencial": diferencial de precio (ej: "-25" o "+10")
-- "valor_total": valor total de la factura en pesos colombianos con formato (ej: "12.500.000")
-- "retencion": valor de retención en fuente si aparece
-- "total_pagar": total neto a pagar después de descuentos
-- "estado_final": PAGADO, PENDIENTE, PARCIAL, APROBADO, etc. según el documento
-- "proveedor": nombre completo del proveedor/vendedor/cooperativa
-- "comprador": nombre de la empresa compradora
-- "cantidad": cantidad de sacos, kg o arrobas
-- "precio_unitario": precio por unidad/saco/kg
-- "descripcion_producto": tipo de café o producto (ej: "Café pergamino seco")
-- Los campos bancarios: banco y fecha de los comprobantes o soportes de pago
-- "notas": cualquier observación relevante adicional
-- Si un campo no aparece en el documento, deja el string vacío ""
-- NO inventes datos. Solo extrae lo que REALMENTE está en el documento.`;
-
-// ═══════════════════════════════════════════════════════
-//  HELPERS UI
-// ═══════════════════════════════════════════════════════
-function setSync(msg, color = 'var(--green)', spinning = false) {
-    const label = document.getElementById('sync-label');
-    const dot   = document.getElementById('sync-dot');
-    label.style.color = color;
-    label.textContent = msg;
-    dot.style.background = color;
-    spinning ? dot.classList.add('spin') : dot.classList.remove('spin');
-}
-
-function log(msg, type = 'info') {
-    const el = document.getElementById('ai-log');
-    el.style.display = 'block';
-    const d = document.createElement('div');
-    d.className = `log-entry ${type}`;
-    d.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-    el.appendChild(d);
-    el.scrollTop = el.scrollHeight;
-}
-
-function showOverlay(msg = 'ANALIZANDO DOCUMENTOS...', progress = '') {
-    document.getElementById('ai-msg-main').textContent      = msg;
-    document.getElementById('ai-files-progress').textContent = progress;
+async function analizarConIA(files) {
+    if (!files.length) return;
     document.getElementById('ai-overlay').classList.add('visible');
-}
-function hideOverlay() {
-    document.getElementById('ai-overlay').classList.remove('visible');
-}
-
-// ═══════════════════════════════════════════════════════
-//  DRAG & DROP
-// ═══════════════════════════════════════════════════════
-function handleDrop(e) {
-    e.preventDefault();
-    document.getElementById('drop-zone').style.borderColor = 'var(--border2)';
-    analizarArchivo(e.dataTransfer.files);
-}
-
-// ═══════════════════════════════════════════════════════
-//  CONVERTIR ARCHIVO A BASE64
-// ═══════════════════════════════════════════════════════
-function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload  = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = () => reject(new Error('Error leyendo archivo: ' + file.name));
-        reader.readAsDataURL(file);
-    });
-}
-
-function getMediaType(file) {
-    const ext = file.name.split('.').pop().toLowerCase();
-    const map = { pdf: 'application/pdf', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp' };
-    return map[ext] || file.type || 'application/pdf';
-}
-
-// ═══════════════════════════════════════════════════════
-//  LLAMAR A CLAUDE API
-// ═══════════════════════════════════════════════════════
-async function analizarConClaude(files) {
-    const contentBlocks = [{ type: 'text', text: EXTRACTION_PROMPT }];
-
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        showOverlay('LEYENDO ARCHIVOS...', `Procesando ${i + 1}/${files.length}: ${file.name}`);
-        log(`Cargando: ${file.name}`, 'info');
-        try {
-            const b64       = await fileToBase64(file);
-            const mediaType = getMediaType(file);
-            if (mediaType === 'application/pdf') {
-                contentBlocks.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: b64 } });
-            } else {
-                contentBlocks.push({ type: 'image',    source: { type: 'base64', media_type: mediaType,           data: b64 } });
-            }
-            log(`✓ Cargado: ${file.name}`, 'ok');
-        } catch (err) {
-            log(`✗ Error cargando ${file.name}: ${err.message}`, 'err');
-        }
-    }
-
-    showOverlay('EXTRAYENDO DATOS CON IA...', `Analizando ${files.length} documento(s) simultáneamente`);
-    log('Enviando a Claude para extracción...', 'info');
-
-    // *** LLAMADA A LA API ANTHROPIC ***
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            model: CLAUDE_MODEL,
-            max_tokens: 1500,
-            messages: [{ role: 'user', content: contentBlocks }]
-        })
-    });
-
-    if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`API Error ${response.status}: ${errText}`);
-    }
-
-    const data    = await response.json();
-    const rawText = data.content
-        .filter(b => b.type === 'text')
-        .map(b => b.text)
-        .join('');
-
-    log(`Respuesta recibida (${rawText.length} chars)`, 'info');
-
-    // Limpiar posibles backticks de markdown
-    const cleaned = rawText.replace(/```json[\s\S]*?```|```[\s\S]*?```/g, m => m.replace(/```json|```/g, '')).trim();
-    // Buscar el primer { y el último }
-    const start = cleaned.indexOf('{');
-    const end   = cleaned.lastIndexOf('}');
-    if (start === -1 || end === -1) throw new Error('No se encontró JSON en la respuesta');
-
+    
     try {
-        const parsed = JSON.parse(cleaned.substring(start, end + 1));
-        log('✓ JSON extraído correctamente', 'ok');
-        return parsed;
-    } catch (e) {
-        log(`Error parseando JSON: ${e.message}`, 'err');
-        log(`Raw (primeros 300 chars): ${cleaned.substring(0, 300)}`, 'err');
-        throw new Error('No se pudo parsear la respuesta de la IA');
-    }
-}
-
-// ═══════════════════════════════════════════════════════
-//  FUNCIÓN PRINCIPAL: ANALIZAR ARCHIVOS
-// ═══════════════════════════════════════════════════════
-async function analizarArchivo(files) {
-    if (!files || !files.length) return;
-
-    currentId = Date.now();
-    document.getElementById('ai-log').innerHTML = '';
-    document.getElementById('ai-log').style.display = 'none';
-    document.getElementById('file-list').innerHTML = '';
-
-    // Mostrar cards de archivos
-    Array.from(files).forEach(f => {
-        const safeId = f.name.replace(/[^a-zA-Z0-9]/g, '_');
-        document.getElementById('file-list').insertAdjacentHTML('beforeend', `
-            <div class="file-card" id="fc-${safeId}">
-                <i class="ti ti-file-text" style="color:var(--blue)"></i>
-                <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${f.name}</span>
-                <span class="fc-status" id="fcs-${safeId}">PROCESANDO...</span>
-            </div>`);
-    });
-
-    showOverlay('INICIANDO ANÁLISIS IA...', '');
-    setSync('ANALIZANDO...', 'var(--amber)', true);
-
-    let extracted = null;
-    try {
-        extracted = await analizarConClaude(Array.from(files));
-    } catch (err) {
-        hideOverlay();
-        log(`ERROR CRÍTICO: ${err.message}`, 'err');
-        setSync('ERROR DE API', 'var(--red)', false);
-
-        // Marcar archivos como error
-        Array.from(files).forEach(f => {
-            const safeId = f.name.replace(/[^a-zA-Z0-9]/g, '_');
-            const el = document.getElementById(`fcs-${safeId}`);
-            if (el) { el.textContent = '✗ ERROR'; el.classList.add('err'); }
+        const file = files[0]; // Procesa el primer archivo seleccionado
+        const b64 = await toBase64(file);
+        
+        const response = await fetch(`${MODEL_URL}?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [
+                        { text: PROMPT_IA },
+                        { inline_data: { mime_type: file.type || "image/jpeg", data: b64 } }
+                    ]
+                }]
+            })
         });
 
-        alert(`Error al comunicarse con la IA:\n${err.message}\n\nAsegúrate de ejecutar esta herramienta desde un Artifact de Claude (claude.ai), no desde GitHub Pages.`);
-        document.getElementById('file-inp').value = '';
-        return;
-    }
+        const result = await response.json();
+        const rawJson = result.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim();
+        const data = JSON.parse(rawJson);
 
-    hideOverlay();
+        // Llenar campos
+        setVal('inp-orden', data.orden_compra);
+        setVal('inp-factura', data.n_factura);
+        setVal('inp-f-oferta', data.fecha_oferta);
+        setVal('inp-f-fijacion', data.fecha_fijacion);
+        setVal('inp-ny', data.bolsa_ny);
+        setVal('inp-trm', data.trm);
+        setVal('inp-dif', data.diferencial);
+        setVal('inp-ret', data.retencion);
+        setVal('inp-v-total', data.valor_total);
+        setVal('inp-v-pagar', data.total_pagar);
+        setVal('inp-proveedor', data.proveedor);
+        setVal('inp-descripcion', data.descripcion);
 
-    // Marcar archivos como analizados
-    Array.from(files).forEach(f => {
-        const safeId = f.name.replace(/[^a-zA-Z0-9]/g, '_');
-        const el = document.getElementById(`fcs-${safeId}`);
-        if (el) { el.textContent = '✓ ANALIZADO'; el.classList.add('ok'); }
-        const card = document.getElementById(`fc-${safeId}`);
-        if (card) card.querySelector('i').style.color = 'var(--green)';
-    });
+        updateKPIs(data.estado_documento);
+        addToHistory(data);
 
-    if (extracted) {
-        setField('inp-orden',        extracted.orden_compra);
-        setField('inp-factura',       extracted.n_factura);
-        setField('inp-f-oferta',      extracted.fecha_oferta);
-        setField('inp-f-fijacion',    extracted.fecha_fijacion);
-        setField('inp-ny',            extracted.bolsa_ny);
-        setField('inp-trm',           extracted.trm);
-        setField('inp-dif',           extracted.diferencial);
-        setField('inp-ret',           extracted.retencion);
-        setField('inp-f-factura',     extracted.fecha_factura);
-        setField('inp-v-total',       extracted.valor_total);
-        setField('inp-v-pagar',       extracted.total_pagar);
-        setField('inp-estado-final',  extracted.estado_final);
-        setField('inp-proveedor',     extracted.proveedor);
-        setField('inp-comprador',     extracted.comprador);
-        setField('inp-cantidad',      extracted.cantidad);
-        setField('inp-precio-unit',   extracted.precio_unitario);
-        setField('inp-descripcion',   extracted.descripcion_producto);
-        setField('inp-notas',         extracted.notas);
-        setField('b1-ent',            extracted.banco_soporte1);
-        setField('b1-fec',            extracted.fecha_soporte1);
-        setField('b2-ent',            extracted.banco_soporte2);
-        setField('b2-fec',            extracted.fecha_soporte2);
-        setField('b3-ent',            extracted.banco_pago_final);
-        setField('b3-fec',            extracted.fecha_pago_final);
-
-        document.getElementById('stat-docs').textContent    = files.length;
-        document.getElementById('stat-estado').textContent  = extracted.estado_final || 'ANALIZADO';
-        document.getElementById('label-proceso').textContent = extracted.orden_compra ? `PROCESO: ${extracted.orden_compra}` : '';
-
-        updateKPI();
-        log('✓ Todos los campos poblados correctamente', 'ok');
-        setSync('DATOS EXTRAÍDOS', 'var(--green)', false);
-    }
-
-    // Guardar en historial local
-    const fileNames = Array.from(files).map(f => f.name);
-    const data      = capturar();
-    data.id         = currentId;
-    data.fileNames  = fileNames;
-    historial.unshift(data);
-    saveLocalStorage();
-    renderHist();
-
-    // Sync Google Sheets (optional, no-cors, no blocker)
-    syncGS('SAVE', data);
-
-    document.getElementById('file-inp').value = '';
-}
-
-function setField(id, val) {
-    const el = document.getElementById(id);
-    if (el && val !== undefined && val !== null && val !== '') el.value = val;
-}
-
-// ═══════════════════════════════════════════════════════
-//  CAPTURAR ESTADO ACTUAL
-// ═══════════════════════════════════════════════════════
-function capturar() {
-    return {
-        id:          currentId || Date.now(),
-        orden:       v('inp-orden'),
-        factura:     v('inp-factura'),
-        fFactura:    v('inp-f-factura'),
-        fOferta:     v('inp-f-oferta'),
-        fFijacion:   v('inp-f-fijacion'),
-        ny:          v('inp-ny'),
-        trm:         v('inp-trm'),
-        dif:         v('inp-dif'),
-        total:       v('inp-v-total'),
-        ret:         v('inp-ret'),
-        pagar:       v('inp-v-pagar'),
-        estado:      v('inp-estado-final'),
-        proveedor:   v('inp-proveedor'),
-        comprador:   v('inp-comprador'),
-        cantidad:    v('inp-cantidad'),
-        precioUnit:  v('inp-precio-unit'),
-        descripcion: v('inp-descripcion'),
-        notas:       v('inp-notas'),
-        fileNames:   [],
-        bancos: [
-            { ent: v('b1-ent'), fec: v('b1-fec') },
-            { ent: v('b2-ent'), fec: v('b2-fec') },
-            { ent: v('b3-ent'), fec: v('b3-fec') }
-        ]
-    };
-}
-
-function v(id) {
-    const el = document.getElementById(id);
-    return el ? el.value.trim() : '';
-}
-
-// ═══════════════════════════════════════════════════════
-//  PERSISTENCIA LOCAL
-// ═══════════════════════════════════════════════════════
-function saveLocalStorage() {
-    try { localStorage.setItem('dap_historial', JSON.stringify(historial)); } catch(e) { /* quota */ }
-}
-
-// ═══════════════════════════════════════════════════════
-//  SYNC CON GOOGLE SHEETS (opcional)
-// ═══════════════════════════════════════════════════════
-async function syncGS(action = 'SAVE', overrideData = null) {
-    const data    = overrideData || capturar();
-    data.action   = action;
-    setSync('SINCRONIZANDO NUBE...', 'var(--amber)', true);
-    try {
-        await fetch(GS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-        setSync('SINCRONIZADO EN NUBE', 'var(--green)', false);
     } catch (e) {
-        setSync('SIN SYNC DE NUBE', 'var(--txt3)', false);
+        console.error(e);
+        alert("Error en el análisis. Intenta con un archivo más claro.");
+    } finally {
+        document.getElementById('ai-overlay').classList.remove('visible');
     }
 }
 
-// ═══════════════════════════════════════════════════════
-//  AUTO SAVE (con debounce)
-// ═══════════════════════════════════════════════════════
-function autoSave() {
-    if (!currentId) return;
-    const idx = historial.findIndex(h => h.id === currentId);
-    const cur = capturar();
-    cur.id = currentId;
-    if (idx > -1) {
-        cur.fileNames = historial[idx].fileNames || [];
-        historial[idx] = cur;
+function setVal(id, val) { document.getElementById(id).value = val || ''; }
+
+function updateKPIs(estado) {
+    const total = document.getElementById('inp-v-total').value;
+    const pagar = document.getElementById('inp-v-pagar').value;
+    const trm = document.getElementById('inp-trm').value;
+    const ny = document.getElementById('inp-ny').value;
+
+    document.getElementById('kpi-total').innerText = total ? '$' + Number(total).toLocaleString() : '$0';
+    document.getElementById('kpi-pagar').innerText = pagar ? '$' + Number(pagar).toLocaleString() : '$0';
+    document.getElementById('kpi-trm').innerText = trm || '0';
+    document.getElementById('kpi-ny').innerText = ny || '0';
+    
+    if(estado) {
+        document.getElementById('kpi-estado').innerText = estado;
+        document.getElementById('kpi-estado').style.color = estado.includes("PAG") ? "var(--green)" : "var(--amber)";
     }
-    renderHist();
-    saveLocalStorage();
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => syncGS('SAVE'), 2500);
 }
 
-// ═══════════════════════════════════════════════════════
-//  HISTORIAL
-// ═══════════════════════════════════════════════════════
-function renderHist() {
-    const c = document.getElementById('historial-container');
-    if (!historial.length) {
-        c.innerHTML = '<div style="padding:20px;font-size:11px;color:var(--txt3);text-align:center;font-family:var(--mono);">Sin registros</div>';
-        return;
-    }
-    c.innerHTML = '';
-    historial.forEach(h => {
-        const div      = document.createElement('div');
-        div.className  = `history-item ${currentId === h.id ? 'active' : ''}`;
-        const num      = h.total ? '$' + Number(String(h.total).replace(/[^0-9]/g, '')).toLocaleString() : '$0';
-        const facShort = (h.factura || '').substring(0, 14) + ((h.factura||'').length > 14 ? '…' : '');
-        div.innerHTML  = `
-            <i class="ti ti-trash delete-btn" onclick="borrarRegistro(${h.id}, event)" title="Eliminar"></i>
-            <div onclick="cargar(${h.id})">
-                <div class="h-name">${h.orden || 'Sin orden...'}</div>
-                <div class="h-meta">
-                    <span>${facShort}</span>
-                    <span>${num}</span>
-                </div>
-                <div class="h-status">${h.estado || 'CARGADO'}</div>
-            </div>`;
-        c.appendChild(div);
+function addToHistory(data) {
+    const hist = document.getElementById('historial');
+    const item = document.createElement('div');
+    item.className = "history-item";
+    item.innerHTML = `
+        <div class="h-title">${data.orden_compra || 'Sin Orden'}</div>
+        <div class="h-sub">${data.proveedor || 'Proveedor desconocido'} - $${Number(data.valor_total).toLocaleString()}</div>
+    `;
+    hist.prepend(item);
+}
+
+function toBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = error => reject(error);
     });
-}
-
-function cargar(id) {
-    const h = historial.find(x => x.id === id);
-    if (!h) return;
-    currentId = id;
-
-    setField('inp-orden',        h.orden);
-    setField('inp-factura',      h.factura);
-    setField('inp-f-oferta',     h.fOferta);
-    setField('inp-f-fijacion',   h.fFijacion);
-    setField('inp-ny',           h.ny);
-    setField('inp-trm',          h.trm);
-    setField('inp-dif',          h.dif);
-    setField('inp-ret',          h.ret);
-    setField('inp-f-factura',    h.fFactura);
-    setField('inp-v-total',      h.total);
-    setField('inp-v-pagar',      h.pagar);
-    setField('inp-estado-final', h.estado);
-    setField('inp-proveedor',    h.proveedor);
-    setField('inp-comprador',    h.comprador);
-    setField('inp-cantidad',     h.cantidad);
-    setField('inp-precio-unit',  h.precioUnit);
-    setField('inp-descripcion',  h.descripcion);
-    setField('inp-notas',        h.notas);
-    setField('b1-ent', h.bancos?.[0]?.ent); setField('b1-fec', h.bancos?.[0]?.fec);
-    setField('b2-ent', h.bancos?.[1]?.ent); setField('b2-fec', h.bancos?.[1]?.fec);
-    setField('b3-ent', h.bancos?.[2]?.ent); setField('b3-fec', h.bancos?.[2]?.fec);
-
-    document.getElementById('file-list').innerHTML = (h.fileNames || []).map(n => `
-        <div class="file-card">
-            <i class="ti ti-file-check" style="color:var(--green)"></i>
-            <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n}</span>
-            <span class="fc-status ok">✓ ANALIZADO</span>
-        </div>`).join('');
-
-    document.getElementById('stat-docs').textContent      = (h.fileNames || []).length;
-    document.getElementById('label-proceso').textContent  = h.orden ? `PROCESO: ${h.orden}` : '';
-    updateKPI();
-    renderHist();
-    setSync('REGISTRO CARGADO', 'var(--green)', false);
-}
-
-async function borrarRegistro(id, e) {
-    e.stopPropagation();
-    if (!confirm('¿Eliminar este registro?')) return;
-    syncGS('DELETE', { id });
-    historial = historial.filter(x => x.id !== id);
-    saveLocalStorage();
-    if (currentId === id) resetForm();
-    else renderHist();
-}
-
-async function borrarTodo() {
-    if (!confirm('ATENCIÓN: Se eliminarán TODOS los registros del historial. ¿Continuar?')) return;
-    historial.forEach(h => syncGS('DELETE', { id: h.id }));
-    historial = [];
-    saveLocalStorage();
-    resetForm();
-}
-
-// ═══════════════════════════════════════════════════════
-//  RESET / KPI / EXPORT
-// ═══════════════════════════════════════════════════════
-function resetForm() {
-    currentId = null;
-    document.querySelectorAll('input').forEach(i => i.value = '');
-    document.getElementById('file-list').innerHTML  = '';
-    document.getElementById('ai-log').innerHTML     = '';
-    document.getElementById('ai-log').style.display = 'none';
-    document.getElementById('stat-docs').textContent      = '0';
-    document.getElementById('stat-val').textContent       = '$0';
-    document.getElementById('stat-pay').textContent       = '$0';
-    document.getElementById('stat-pago').textContent      = '--/--/--';
-    document.getElementById('label-proceso').textContent  = '';
-    document.getElementById('stat-estado').textContent    = 'SIN DATOS';
-    document.getElementById('stat-estado').style.color    = 'var(--amber)';
-    renderHist();
-    setSync('SISTEMA ACTIVO', 'var(--green)', false);
-}
-
-function updateKPI() {
-    const t = v('inp-v-total').replace(/[^0-9.]/g, '');
-    const p = v('inp-v-pagar').replace(/[^0-9.]/g, '');
-    document.getElementById('stat-val').textContent  = t ? '$' + Number(t).toLocaleString() : '$0';
-    document.getElementById('stat-pay').textContent  = p ? '$' + Number(p).toLocaleString() : '$0';
-    document.getElementById('stat-pago').textContent = v('b3-fec') || '--/--/--';
-    const est = v('inp-estado-final');
-    if (est) {
-        const el = document.getElementById('stat-estado');
-        el.textContent  = est;
-        el.style.color  = est.toUpperCase().includes('PAG')  ? 'var(--green)'  :
-                          est.toUpperCase().includes('PEND') ? 'var(--amber)'  :
-                          est.toUpperCase().includes('APRO') ? 'var(--blue)'   : 'var(--cyan)';
-    }
 }
 
 function exportExcel() {
-    const d = capturar();
-    if (!d.orden && !d.factura) { alert('No hay datos para exportar.'); return; }
-
-    const row = {
-        'ID Análisis':      d.id,
-        'Orden Compra':     d.orden,
-        'N° Factura':       d.factura,
-        'Fecha Factura':    d.fFactura,
-        'Fecha Oferta':     d.fOferta,
-        'Fecha Fijación':   d.fFijacion,
-        'Bolsa NY':         d.ny,
-        'TRM':              d.trm,
-        'Diferencial':      d.dif,
-        'Valor Total':      d.total,
-        'Retención':        d.ret,
-        'Total a Pagar':    d.pagar,
-        'Estado':           d.estado,
-        'Proveedor':        d.proveedor,
-        'Comprador':        d.comprador,
-        'Cantidad':         d.cantidad,
-        'Precio Unitario':  d.precioUnit,
-        'Descripción':      d.descripcion,
-        'Notas':            d.notas,
-        'Banco Soporte 1':  d.bancos[0].ent,
-        'Fecha Soporte 1':  d.bancos[0].fec,
-        'Banco Soporte 2':  d.bancos[1].ent,
-        'Fecha Soporte 2':  d.bancos[1].fec,
-        'Banco Pago Final': d.bancos[2].ent,
-        'Fecha Pago Final': d.bancos[2].fec,
-        'Archivos':         (d.fileNames || []).join(', ')
+    const info = {
+        Orden: document.getElementById('inp-orden').value,
+        Factura: document.getElementById('inp-factura').value,
+        Total: document.getElementById('inp-v-total').value,
+        Pagar: document.getElementById('inp-v-pagar').value,
+        Proveedor: document.getElementById('inp-proveedor').value
     };
-
-    const ws = XLSX.utils.json_to_sheet([row]);
+    const ws = XLSX.utils.json_to_sheet([info]);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Reporte');
-    XLSX.writeFile(wb, `DocAnalytics_${d.orden || d.factura || 'Reporte'}.xlsx`);
+    XLSX.utils.book_append_sheet(wb, ws, "Reporte");
+    XLSX.writeFile(wb, "DocAnalytics_Report.xlsx");
 }
-
-// ═══════════════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════════════
-renderHist();
 </script>
 </body>
 </html>
