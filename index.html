@@ -202,8 +202,8 @@
 
 <div id="ai-overlay">
     <div class="ai-spinner"></div>
-    <div style="color:var(--cyan); font-family:var(--mono); font-weight:800; letter-spacing:2px;">AUDITORÍA GERENCIAL CON IA...</div>
-    <div id="ai-status" style="font-size:11px; color:var(--txt3)">Motor Gemini 1.5 Flash (v1 estable) - Analizando...</div>
+    <div style="color:var(--cyan); font-family:var(--mono); font-weight:800; letter-spacing:2px;">AUDITORÍA MAESTRA CON IA...</div>
+    <div id="ai-status" style="font-size:11px; color:var(--txt3)">Motor Gemini 1.5 Flash Pro - Analizando Documento...</div>
 </div>
 
 <div class="wrap">
@@ -308,7 +308,7 @@
                             <td><input type="text" id="inp-estado" placeholder="PAGADO / PENDIENTE" oninput="autoSave()"></td>
                         </tr>
                         <tr>
-                            <td>Vendedor / Prov.</td>
+                            <td>Proveedor / Vendedor</td>
                             <td><input type="text" id="inp-prov" placeholder="Nombre completo" oninput="autoSave()"></td>
                             <td>Comprador</td>
                             <td><input type="text" id="inp-comp" placeholder="Empresa compradora" oninput="autoSave()"></td>
@@ -344,7 +344,7 @@
                     </div>
                     <div class="bank-card">
                         <div class="bank-label" style="color:var(--green);">PAGO FINAL</div>
-                        <input type="text" id="b3-e" placeholder="Banco Pago" oninput="autoSave()">
+                        <input type="text" id="b3-e" placeholder="Banco" oninput="autoSave()">
                         <input type="text" id="b3-f" placeholder="Fecha Pago" style="margin-top:5px" oninput="updateKPI();autoSave()">
                     </div>
                 </div>
@@ -354,7 +354,7 @@
             <div class="upload-box" onclick="document.getElementById('file-inp').click()">
                 <i class="ti ti-cloud-upload" style="font-size:42px; color:var(--purple2);"></i>
                 <h3 style="margin-top:10px;">Cargar Documento para Análisis Maestro</h3>
-                <p style="font-size:11px; color:var(--txt3)">Sube fotos o PDFs. Modo estable v1 activado.</p>
+                <p style="font-size:11px; color:var(--txt3)">Sube fotos o PDFs. Motor híbrido v1/v1beta activado.</p>
                 <input type="file" id="file-inp" hidden multiple accept="image/*,application/pdf" onchange="analizarArchivo(this.files)">
             </div>
             <div id="file-list" style="margin-top:10px;"></div>
@@ -373,7 +373,7 @@ const GS_URL = "https://script.google.com/macros/s/AKfycbzOtIoI-3ptjVRBIYTulGnc0
 // ═══════════════════════════════════════════════════════
 //  ESTADO Y MEMORIA PERSISTENTE
 // ═══════════════════════════════════════════════════════
-let historial = JSON.parse(localStorage.getItem('doc_gerencial_maestro_v100')) || [];
+let historial = JSON.parse(localStorage.getItem('doc_gerencial_v_definitiva')) || [];
 let currentId = null;
 let saveTimer;
 
@@ -383,7 +383,7 @@ window.onload = () => {
 };
 
 // ═══════════════════════════════════════════════════════
-//  MOTOR DE IA BLINDADO (v1 Estable)
+//  MOTOR DE IA (FIX VERSIÓN GOOGLE)
 // ═══════════════════════════════════════════════════════
 async function analizarArchivo(files) {
     if (!files || !files.length) return;
@@ -394,11 +394,10 @@ async function analizarArchivo(files) {
         const file = files[0];
         const b64 = await toBase64(file);
         
-        // PROMPT MAESTRO
-        const promptIA = `OCR_FINANCE_ENGINE: Transcribe and output data ONLY in JSON format from this commercial document.SCHEMA: { "orden_compra": "", "n_factura": "", "fecha_factura": "", "fecha_oferta": "", "fecha_fijacion": "", "bolsa_ny": "", "trm": "", "diferencial": "", "retencion": "", "valor_total": "", "total_pagar": "", "estado_final": "", "proveedor": "", "comprador": "", "cantidad": "", "precio_unitario": "", "descripcion_producto": "", "notas": "" }. RETURN ONLY RAW JSON BLOCK.`;
+        const promptIA = `OCR_MAESTRO: Transcribe and output data ONLY in JSON format. SCHEMA: { "orden_compra": "", "n_factura": "", "fecha_factura": "", "fecha_oferta": "", "fecha_fijacion": "", "bolsa_ny": "", "trm": "", "diferencial": "", "retencion": "", "valor_total": "", "total_pagar": "", "estado_final": "", "proveedor": "", "comprador": "", "cantidad": "", "precio_unitario": "", "descripcion_producto": "", "notas": "" }. RETURN RAW JSON.`;
 
-        // URL CORREGIDA A v1 ESTABLE
-        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        // USAMOS v1beta QUE ES LA QUE SOPORTA FLASH EN ESTE MOMENTO PARA ESTE MODELO
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
         const response = await fetch(url, {
             method: 'POST',
@@ -409,27 +408,25 @@ async function analizarArchivo(files) {
                     { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
                     { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
                     { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-                ],
-                generationConfig: { temperature: 0.1, topP: 1, topK: 1 }
+                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_CIVIC_INTEGRITY", threshold: "BLOCK_NONE" }
+                ]
             })
         });
 
         const result = await response.json();
 
-        // ── VERIFICACIÓN DE SEGURIDAD Y RESPUESTA ──
         if (result.error) {
             throw new Error(`Google Error: ${result.error.message}`);
         }
         if (!result.candidates || !result.candidates[0].content) {
-            throw new Error("La IA no pudo procesar el documento. Intenta con una imagen más clara.");
+            throw new Error("Google bloqueó el archivo o la IA no pudo leerlo. Intenta con una captura más clara.");
         }
 
         const rawText = result.candidates[0].content.parts[0].text;
         const cleanedJson = rawText.match(/\{[\s\S]*\}/)[0];
         const data = JSON.parse(cleanedJson);
 
-        // ── LLENADO DE CAMPOS ──
         setV('inp-orden', data.orden_compra); setV('inp-factura', data.n_factura);
         setV('inp-f-factura', data.fecha_factura); setV('inp-f-oferta', data.fecha_oferta);
         setV('inp-f-fijacion', data.fecha_fijacion); setV('inp-ny', data.bolsa_ny);
@@ -444,19 +441,19 @@ async function analizarArchivo(files) {
         saveAndSync();
 
     } catch (e) {
-        alert("CRITICAL SYSTEM ERROR: " + e.message);
+        alert("CRITICAL ERROR: " + e.message);
     } finally {
         document.getElementById('ai-overlay').classList.remove('visible');
     }
 }
 
-// ── HELPERS TÉCNICOS ──
+// ── HELPERS ──
 function toBase64(f) { return new Promise(r => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = () => r(rd.result.split(',')[1]); }); }
 function setV(id, v) { const el = document.getElementById(id); if(el) el.value = v || ''; }
 function getV(id) { const el = document.getElementById(id); return el ? el.value : ''; }
 
 // ═══════════════════════════════════════════════════════
-//  LÓGICA DE NEGOCIO (AUDITORÍA)
+//  LÓGICA GERENCIAL
 // ═══════════════════════════════════════════════════════
 function updateKPI() {
     const t = getV('inp-v-total').replace(/[^0-9]/g, '');
@@ -494,7 +491,7 @@ function saveAndSync() {
     const data = capturarTodo();
     const idx = historial.findIndex(h => h.id === data.id);
     if (idx > -1) historial[idx] = data; else historial.unshift(data);
-    localStorage.setItem('doc_gerencial_maestro_v100', JSON.stringify(historial));
+    localStorage.setItem('doc_gerencial_v_definitiva', JSON.stringify(historial));
     renderHist();
     syncCloud(data);
 }
@@ -554,19 +551,19 @@ function exportExcel() {
     const ws = XLSX.utils.json_to_sheet(historial);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Auditoria");
-    XLSX.writeFile(wb, `Reporte_DocAnalytics_${new Date().toLocaleDateString()}.xlsx`);
+    XLSX.writeFile(wb, `Reporte_PRO_${new Date().toLocaleDateString()}.xlsx`);
 }
 
 function borrarRegistro(e, id) {
     e.stopPropagation();
     if (!confirm('¿Eliminar registro?')) return;
     historial = historial.filter(x => x.id !== id);
-    localStorage.setItem('doc_gerencial_maestro_v100', JSON.stringify(historial));
+    localStorage.setItem('doc_gerencial_v_definitiva', JSON.stringify(historial));
     if(currentId === id) resetForm(); else renderHist();
 }
 
 function resetForm() { location.reload(); }
-function borrarTodo() { if(confirm('¿Borrar TODO?')) { localStorage.clear(); location.reload(); } }
+function borrarTodo() { if(confirm('¿Borrar TODO el historial?')) { localStorage.clear(); location.reload(); } }
 </script>
 </body>
 </html>
