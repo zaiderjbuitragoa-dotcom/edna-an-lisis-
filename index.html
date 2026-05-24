@@ -6,313 +6,961 @@
     <title>DocAnalytics Pro - Gestión Gerencial Real</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;600;700;800&display=swap');
+
         *{box-sizing:border-box;margin:0;padding:0;}
         :root{
-            --bg:#050505;--bg2:#0f1117;--bg3:#161922;--bg4:#1e2330;
-            --border:#2a3147;--border2:#3a4460;
-            --txt:#e8ecf4;--txt2:#8b95b0;--txt3:#555f7a;
-            --purple:#7c6fe0;--purple2:#5a4fb5;--purple3:#2d2060;
-            --green:#22c97a;--red:#e85555;--amber:#f5a623;--blue:#4a9eff;
-            --font-sans: 'Inter', system-ui, sans-serif;
-            --r:8px;--rl:12px;
+            --bg:#04050a;--bg2:#080d14;--bg3:#0d1220;--bg4:#141b2d;--bg5:#1a2235;
+            --border:#1f2d45;--border2:#2a3d5c;--border3:#3a5278;
+            --txt:#d4ddf0;--txt2:#7a8faa;--txt3:#445570;
+            --purple:#6c63ff;--purple2:#4d45cc;--purple3:#1e1a5e;
+            --green:#00e5a0;--green2:#00b87e;
+            --red:#ff4d6a;--amber:#ffb340;--blue:#3a9fff;--cyan:#00d4ff;
+            --font: 'IBM Plex Sans', system-ui, sans-serif;
+            --mono: 'IBM Plex Mono', monospace;
+            --r:6px;--rl:10px;
         }
-        body { background: var(--bg); color: var(--txt); font-family: var(--font-sans); padding: 20px; }
-        .wrap{display:flex;background:var(--bg2);border-radius:var(--rl);border:1px solid var(--border);overflow:hidden;min-height:95vh; max-width: 1550px; margin: 0 auto;}
-        
-        /* Sidebar */
-        .sidebar{width:280px;flex-shrink:0;background:var(--bg3);border-right:1px solid var(--border);display:flex;flex-direction:column;}
-        .logo{padding:25px;border-bottom:1px solid var(--border);text-align:center;}
-        .logo-icon{width:45px;height:45px;background:var(--purple);border-radius:12px;display:flex;align-items:center;justify-content:center;margin: 0 auto 12px;}
-        .logo-name{font-size:18px;font-weight:800;letter-spacing:1px; color:#fff;}
-        .nav-item{display:flex;align-items:center;gap:12px;padding:15px 20px;font-size:13px;color:var(--txt2);cursor:pointer;transition:0.2s;}
-        .nav-item:hover, .nav-item.act{background:var(--bg4);color:var(--txt);}
+        html,body{height:100%;}
+        body{background:var(--bg);color:var(--txt);font-family:var(--font);overflow:hidden;}
 
-        /* Historial */
-        .history-section { flex: 1; overflow-y: auto; padding-bottom: 20px; }
-        .history-item { position:relative; padding: 15px 20px; border-bottom: 1px solid #ffffff05; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
-        .history-item:hover { background: var(--bg4); }
-        .history-item.active { background: var(--purple3); border-left-color: var(--purple); }
-        .history-item .h-name { font-size: 13px; font-weight: 700; color: #fff; display: block; }
-        .history-item .h-meta { font-size: 10px; color: var(--txt3); margin-top:5px; display:flex; justify-content:space-between; }
-        .delete-btn { position: absolute; top: 15px; right: 15px; color: var(--txt3); transition: 0.2s; z-index: 10;}
-        .delete-btn:hover { color: var(--red); transform: scale(1.2); }
+        /* ── LAYOUT ── */
+        .wrap{display:flex;height:100vh;max-width:1680px;margin:0 auto;}
 
-        /* Main Content */
-        .main{flex:1;display:flex;flex-direction:column;min-width:0;}
-        .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 30px;background:var(--bg3);border-bottom:1px solid var(--border);}
-        .content{padding:25px 30px; overflow-y: auto;}
-        
-        .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:15px;margin-bottom:25px;}
-        .kpi{background:var(--bg3);border:1px solid var(--border);padding:18px;border-radius:var(--rl);border-left:4px solid var(--border2);}
-        .kpi-lbl{font-size:10px;color:var(--txt3);font-weight:700;margin-bottom:8px;text-transform:uppercase;}
-        .kpi-n{font-size:18px;font-weight:800; color: #fff;}
+        /* ── SIDEBAR ── */
+        .sidebar{
+            width:270px;flex-shrink:0;
+            background:var(--bg2);
+            border-right:1px solid var(--border);
+            display:flex;flex-direction:column;
+            overflow:hidden;
+        }
+        .logo{
+            padding:22px 20px;border-bottom:1px solid var(--border);
+            display:flex;align-items:center;gap:12px;
+        }
+        .logo-icon{
+            width:38px;height:38px;flex-shrink:0;
+            background:linear-gradient(135deg,var(--purple),var(--cyan));
+            border-radius:10px;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .logo-name{font-size:13px;font-weight:800;letter-spacing:2px;color:#fff;font-family:var(--mono);}
+        .logo-sub{font-size:9px;color:var(--txt3);font-family:var(--mono);margin-top:2px;}
 
-        .panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:25px;margin-bottom:25px;}
+        .btn-nuevo{
+            display:flex;align-items:center;gap:10px;
+            margin:15px 12px;padding:10px 14px;
+            background:var(--purple3);border:1px solid var(--purple2);
+            border-radius:var(--r);color:var(--txt);font-size:12px;font-weight:700;
+            cursor:pointer;transition:.2s;letter-spacing:.5px;
+        }
+        .btn-nuevo:hover{background:var(--purple2);border-color:var(--purple);}
+
+        .sec-label{
+            font-size:9px;color:var(--txt3);font-weight:800;
+            padding:10px 16px 4px;letter-spacing:1.5px;font-family:var(--mono);
+        }
+
+        .history-section{flex:1;overflow-y:auto;}
+        .history-item{
+            position:relative;
+            padding:12px 16px;border-bottom:1px solid #ffffff04;
+            cursor:pointer;transition:.15s;
+            border-left:3px solid transparent;
+        }
+        .history-item:hover{background:var(--bg4);}
+        .history-item.active{background:var(--purple3);border-left-color:var(--purple);}
+        .h-name{font-size:12px;font-weight:700;color:#fff;font-family:var(--mono);}
+        .h-meta{font-size:10px;color:var(--txt3);margin-top:4px;display:flex;justify-content:space-between;}
+        .h-status{font-size:9px;margin-top:4px;color:var(--green);font-family:var(--mono);}
+        .delete-btn{
+            position:absolute;top:12px;right:12px;
+            color:var(--txt3);cursor:pointer;transition:.2s;font-size:14px;
+        }
+        .delete-btn:hover{color:var(--red);}
+
+        .sidebar-footer{padding:14px;border-top:1px solid var(--border);}
+        .btn-danger{
+            width:100%;padding:9px;background:transparent;
+            color:var(--red);border:1px solid var(--red);
+            border-radius:var(--r);cursor:pointer;font-size:11px;font-weight:700;
+            letter-spacing:1px;transition:.2s;
+        }
+        .btn-danger:hover{background:var(--red);color:#000;}
+
+        /* ── MAIN ── */
+        .main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+        .topbar{
+            display:flex;align-items:center;justify-content:space-between;
+            padding:14px 28px;
+            background:var(--bg2);border-bottom:1px solid var(--border);
+            flex-shrink:0;
+        }
+        .sync-pill{
+            display:flex;align-items:center;gap:7px;
+            font-size:10px;font-weight:700;font-family:var(--mono);
+            letter-spacing:1px;
+        }
+        .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+        .sync-dot.spin{animation:pulse 1s infinite;}
+        @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+        .btn-export{
+            background:var(--green);color:#000;border:none;
+            padding:9px 20px;border-radius:var(--r);
+            font-weight:800;font-size:11px;letter-spacing:1px;
+            cursor:pointer;transition:.2s;
+        }
+        .btn-export:hover{background:var(--green2);}
+
+        .content{flex:1;overflow-y:auto;padding:22px 28px;}
+
+        /* ── KPI ROW ── */
+        .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+        .kpi{
+            background:var(--bg3);
+            border:1px solid var(--border);
+            border-top:2px solid var(--border2);
+            padding:14px 16px;border-radius:var(--rl);
+            transition:.2s;
+        }
+        .kpi-lbl{font-size:9px;color:var(--txt3);font-weight:700;margin-bottom:6px;letter-spacing:1.5px;font-family:var(--mono);}
+        .kpi-n{font-size:17px;font-weight:800;color:#fff;font-family:var(--mono);}
+
+        /* ── PANEL ── */
+        .panel{
+            background:var(--bg3);border:1px solid var(--border);
+            border-radius:var(--rl);padding:22px;margin-bottom:18px;
+        }
+        .panel-hdr{
+            display:flex;justify-content:space-between;align-items:center;
+            margin-bottom:18px;
+        }
+        .panel-title{font-weight:800;font-size:12px;letter-spacing:1px;font-family:var(--mono);display:flex;align-items:center;gap:8px;}
+
         table{width:100%;border-collapse:collapse;}
-        th{text-align:left;color:var(--txt3);font-size:10px;padding:12px;border-bottom:1px solid var(--border);text-transform:uppercase;}
-        td{padding:12px 10px;border-bottom:1px solid var(--border);}
-        
-        input { background:var(--bg4);border:1px solid var(--border);color:var(--txt);padding:10px;border-radius:6px;width:100%;font-size:13px; transition:0.2s; }
-        input:focus { border-color: var(--purple); outline:none; background: #252b3b; }
+        th{
+            text-align:left;color:var(--txt3);font-size:9px;
+            padding:10px 12px;border-bottom:1px solid var(--border);
+            letter-spacing:1px;font-family:var(--mono);font-weight:700;
+        }
+        td{padding:8px 10px;border-bottom:1px solid #ffffff04;font-size:13px;}
+        td:first-child,td:nth-child(3){color:var(--txt2);font-size:11px;font-family:var(--mono);}
 
-        .bank-grid{display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px;}
-        .bank-card{background: var(--bg4); padding: 15px; border-radius: var(--r); border: 1px solid var(--border2);}
-        
-        .upload-box{border:2px dashed var(--border2);padding:40px;text-align:center;border-radius:var(--rl);background:var(--bg3);cursor:pointer; transition: 0.3s;}
-        .upload-box:hover { border-color: var(--purple); background: var(--bg4); }
-        .file-card{display:flex;align-items:center;gap:12px;background:var(--bg4);padding:12px;border-radius:8px;margin-top:10px;border:1px solid var(--border); font-size: 12px;}
+        input{
+            background:var(--bg4);border:1px solid var(--border);
+            color:var(--txt);padding:9px 12px;border-radius:var(--r);
+            width:100%;font-size:12px;font-family:var(--mono);
+            transition:.2s;
+        }
+        input:focus{border-color:var(--purple);outline:none;background:var(--bg5);}
+        input::placeholder{color:var(--txt3);}
+
+        /* ── BANK GRID ── */
+        .bank-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:18px;}
+        .bank-card{
+            background:var(--bg4);padding:14px;
+            border-radius:var(--r);border:1px solid var(--border2);
+        }
+        .bank-label{
+            font-size:9px;font-weight:800;margin-bottom:8px;
+            letter-spacing:1.5px;font-family:var(--mono);
+        }
+        .bank-card input+input{margin-top:6px;}
+
+        /* ── UPLOAD BOX ── */
+        .upload-box{
+            border:2px dashed var(--border2);padding:36px 40px;text-align:center;
+            border-radius:var(--rl);background:var(--bg3);cursor:pointer;
+            transition:.3s;position:relative;
+        }
+        .upload-box:hover{border-color:var(--purple);background:var(--bg4);}
+        .upload-box h3{margin-top:10px;font-size:14px;}
+        .upload-box p{font-size:11px;color:var(--txt3);margin-top:4px;}
+
+        /* ── AI LOADING OVERLAY ── */
+        #ai-overlay{
+            display:none;
+            position:fixed;inset:0;z-index:999;
+            background:#04050acc;
+            backdrop-filter:blur(6px);
+            align-items:center;justify-content:center;
+            flex-direction:column;gap:20px;
+        }
+        #ai-overlay.visible{display:flex;}
+        .ai-spinner{
+            width:60px;height:60px;
+            border:3px solid var(--border2);
+            border-top-color:var(--cyan);
+            border-radius:50%;
+            animation:spin 0.8s linear infinite;
+        }
+        @keyframes spin{to{transform:rotate(360deg);}}
+        .ai-msg{font-size:13px;font-family:var(--mono);color:var(--cyan);letter-spacing:1px;}
+        .ai-sub{font-size:10px;font-family:var(--mono);color:var(--txt3);}
+        .ai-files-progress{
+            font-size:11px;font-family:var(--mono);color:var(--txt2);
+            text-align:center;max-width:400px;
+        }
+
+        /* ── FILE CARDS ── */
+        .file-card{
+            display:flex;align-items:center;gap:10px;
+            background:var(--bg4);padding:10px 14px;
+            border-radius:var(--r);margin-top:8px;
+            border:1px solid var(--border);font-size:11px;font-family:var(--mono);
+        }
+        .file-card .fc-status{
+            margin-left:auto;font-size:9px;font-weight:700;
+            color:var(--green);letter-spacing:1px;
+        }
+
+        /* ── AI LOG ── */
+        #ai-log{
+            background:var(--bg4);border:1px solid var(--border);
+            border-radius:var(--r);padding:12px;margin-top:14px;
+            font-size:10px;font-family:var(--mono);color:var(--cyan);
+            max-height:120px;overflow-y:auto;display:none;
+        }
+        .log-entry{padding:2px 0;color:var(--txt2);}
+        .log-entry.ok{color:var(--green);}
+        .log-entry.err{color:var(--red);}
+        .log-entry.info{color:var(--cyan);}
+
+        /* ── FECHA OFERTA / FIJACION ── */
+        .proceso-badge{
+            color:var(--cyan);font-weight:800;font-size:11px;
+            font-family:var(--mono);letter-spacing:1px;
+        }
+
+        ::-webkit-scrollbar{width:4px;}
+        ::-webkit-scrollbar-track{background:transparent;}
+        ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
     </style>
 </head>
 <body>
 
+<!-- AI Loading Overlay -->
+<div id="ai-overlay">
+    <div class="ai-spinner"></div>
+    <div class="ai-msg" id="ai-msg-main">ANALIZANDO DOCUMENTOS...</div>
+    <div class="ai-files-progress" id="ai-files-progress"></div>
+    <div class="ai-sub">La IA está extrayendo todos los datos de tus archivos</div>
+</div>
+
 <div class="wrap">
+    <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="logo">
-            <div class="logo-icon"><i class="ti ti-report-analytics" style="font-size:28px;color:#fff;"></i></div>
-            <div class="logo-name">DOC ANALYTICS</div>
+            <div class="logo-icon"><i class="ti ti-report-analytics" style="font-size:20px;color:#fff;"></i></div>
+            <div>
+                <div class="logo-name">DOC ANALYTICS</div>
+                <div class="logo-sub">GESTIÓN GERENCIAL</div>
+            </div>
         </div>
-        <div class="nav-item" onclick="resetForm()"><i class="ti ti-plus"></i> NUEVO ANÁLISIS</div>
-        <div style="font-size:10px; color:var(--txt3); padding:20px 20px 5px; font-weight:800;">HISTORIAL DE CARGA</div>
-        <div class="history-section" id="historial-container"></div>
-        <div style="padding:20px;"><button onclick="borrarTodo()" style="width:100%; padding:10px; background:var(--red); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">BORRAR TODO (NUBE)</button></div>
+
+        <div class="btn-nuevo" onclick="resetForm()">
+            <i class="ti ti-plus"></i> NUEVO ANÁLISIS
+        </div>
+
+        <div class="sec-label">HISTORIAL DE CARGA</div>
+        <div class="history-section" id="historial-container">
+            <div style="padding:20px;font-size:11px;color:var(--txt3);text-align:center;font-family:var(--mono);">Sin registros</div>
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="btn-danger" onclick="borrarTodo()">⚠ BORRAR TODO (NUBE)</button>
+        </div>
     </div>
 
+    <!-- MAIN -->
     <div class="main">
         <div class="topbar">
-            <div id="sync-label" style="font-size:11px; font-weight:700; color:var(--green);">CONECTADO</div>
-            <button onclick="exportExcel()" style="background:var(--green); color:#000; border:none; padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer;">EXPORTAR EXCEL</button>
+            <div class="sync-pill">
+                <div class="sync-dot" id="sync-dot"></div>
+                <span id="sync-label" style="color:var(--green);">SISTEMA ACTIVO</span>
+            </div>
+            <button class="btn-export" onclick="exportExcel()">↓ EXPORTAR EXCEL</button>
         </div>
 
         <div class="content">
+            <!-- KPI Row -->
             <div class="kpi-row">
-                <div class="kpi" style="border-left-color:var(--purple)"><div class="kpi-lbl">Docs</div><div class="kpi-n" id="stat-docs">0</div></div>
-                <div class="kpi" style="border-left-color:var(--green)"><div class="kpi-lbl">Val. Factura</div><div class="kpi-n" id="stat-val">$0</div></div>
-                <div class="kpi" style="border-left-color:var(--blue)"><div class="kpi-lbl">Último Pago</div><div class="kpi-n" id="stat-pago">--/--/--</div></div>
-                <div class="kpi" style="border-left-color:var(--green)"><div class="kpi-lbl">Total Pagar</div><div class="kpi-n" id="stat-pay">$0</div></div>
-                <div class="kpi"><div class="kpi-lbl">Estado</div><div class="kpi-n" id="stat-estado" style="font-size:12px; color:var(--amber);">SIN DATOS</div></div>
+                <div class="kpi" style="border-top-color:var(--purple)">
+                    <div class="kpi-lbl">DOCUMENTOS</div>
+                    <div class="kpi-n" id="stat-docs">0</div>
+                </div>
+                <div class="kpi" style="border-top-color:var(--green)">
+                    <div class="kpi-lbl">VALOR FACTURA</div>
+                    <div class="kpi-n" id="stat-val">$0</div>
+                </div>
+                <div class="kpi" style="border-top-color:var(--blue)">
+                    <div class="kpi-lbl">ÚLTIMO PAGO</div>
+                    <div class="kpi-n" id="stat-pago">--/--/--</div>
+                </div>
+                <div class="kpi" style="border-top-color:var(--cyan)">
+                    <div class="kpi-lbl">TOTAL A PAGAR</div>
+                    <div class="kpi-n" id="stat-pay">$0</div>
+                </div>
+                <div class="kpi" style="border-top-color:var(--amber)">
+                    <div class="kpi-lbl">ESTADO</div>
+                    <div class="kpi-n" id="stat-estado" style="font-size:11px;color:var(--amber);">SIN DATOS</div>
+                </div>
             </div>
 
+            <!-- Datos Extraídos -->
             <div class="panel">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
-                    <div style="font-weight:700; font-size:14px;"><i class="ti ti-file-text"></i> DATOS REALES EXTRAÍDOS</div>
-                    <div id="label-proceso" style="color:var(--purple); font-weight:800; font-size:12px;"></div>
+                <div class="panel-hdr">
+                    <div class="panel-title"><i class="ti ti-file-text"></i> DATOS REALES EXTRAÍDOS POR IA</div>
+                    <div class="proceso-badge" id="label-proceso"></div>
                 </div>
                 <table>
                     <thead>
-                        <tr><th>Concepto</th><th>VALOR EN DOCUMENTO</th><th>Concepto</th><th>VALOR EN DOCUMENTO</th></tr>
+                        <tr>
+                            <th>CONCEPTO</th><th>VALOR EN DOCUMENTO</th>
+                            <th>CONCEPTO</th><th>VALOR EN DOCUMENTO</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr><td>N° Orden Compra</td><td><input type="text" id="inp-orden" oninput="autoSave()"></td><td>N° Factura</td><td><input type="text" id="inp-factura" oninput="autoSave()"></td></tr>
-                        <tr><td>Fecha Oferta</td><td><input type="text" id="inp-f-oferta" oninput="autoSave()"></td><td>Fecha Fijación</td><td><input type="text" id="inp-f-fijacion" oninput="autoSave()"></td></tr>
-                        <tr><td>Bolsa NY</td><td><input type="number" id="inp-ny" step="0.01" oninput="autoSave()"></td><td>TRM</td><td><input type="number" id="inp-trm" oninput="autoSave()"></td></tr>
-                        <tr><td>Diferencial</td><td><input type="number" id="inp-dif" oninput="autoSave()"></td><td>Retención</td><td><input type="number" id="inp-ret" oninput="updateKPI(); autoSave()"></td></tr>
-                        <tr><td>Fecha Factura</td><td><input type="text" id="inp-f-factura" oninput="autoSave()"></td><td>Valor Total</td><td><input type="number" id="inp-v-total" oninput="updateKPI(); autoSave()"></td></tr>
-                        <tr><td>Total a Pagar</td><td><input type="number" id="inp-v-pagar" oninput="updateKPI(); autoSave()"></td><td>Estado Final</td><td><input type="text" id="inp-estado-final" oninput="autoSave()"></td></tr>
+                        <tr>
+                            <td>N° Orden Compra</td>
+                            <td><input type="text" id="inp-orden" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                            <td>N° Factura</td>
+                            <td><input type="text" id="inp-factura" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                        </tr>
+                        <tr>
+                            <td>Fecha Oferta</td>
+                            <td><input type="text" id="inp-f-oferta" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                            <td>Fecha Fijación</td>
+                            <td><input type="text" id="inp-f-fijacion" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                        </tr>
+                        <tr>
+                            <td>Bolsa NY (¢/lb)</td>
+                            <td><input type="text" id="inp-ny" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                            <td>TRM</td>
+                            <td><input type="text" id="inp-trm" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                        </tr>
+                        <tr>
+                            <td>Diferencial</td>
+                            <td><input type="text" id="inp-dif" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                            <td>Retención</td>
+                            <td><input type="text" id="inp-ret" placeholder="Auto-extraído" oninput="updateKPI();autoSave()"></td>
+                        </tr>
+                        <tr>
+                            <td>Fecha Factura</td>
+                            <td><input type="text" id="inp-f-factura" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                            <td>Valor Total</td>
+                            <td><input type="text" id="inp-v-total" placeholder="Auto-extraído" oninput="updateKPI();autoSave()"></td>
+                        </tr>
+                        <tr>
+                            <td>Total a Pagar</td>
+                            <td><input type="text" id="inp-v-pagar" placeholder="Auto-extraído" oninput="updateKPI();autoSave()"></td>
+                            <td>Estado Final</td>
+                            <td><input type="text" id="inp-estado-final" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                        </tr>
+                        <tr>
+                            <td>Proveedor / Vendedor</td>
+                            <td><input type="text" id="inp-proveedor" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                            <td>Comprador / Empresa</td>
+                            <td><input type="text" id="inp-comprador" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                        </tr>
+                        <tr>
+                            <td>Cantidad / Sacos</td>
+                            <td><input type="text" id="inp-cantidad" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                            <td>Precio Unitario</td>
+                            <td><input type="text" id="inp-precio-unit" placeholder="Auto-extraído" oninput="autoSave()"></td>
+                        </tr>
+                        <tr>
+                            <td>Descripción Producto</td>
+                            <td colspan="3"><input type="text" id="inp-descripcion" placeholder="Auto-extraído" oninput="autoSave()" style="width:100%;"></td>
+                        </tr>
+                        <tr>
+                            <td>Observaciones / Notas</td>
+                            <td colspan="3"><input type="text" id="inp-notas" placeholder="Auto-extraído" oninput="autoSave()" style="width:100%;"></td>
+                        </tr>
                     </tbody>
                 </table>
+
+                <!-- Bank Grid -->
                 <div class="bank-grid">
                     <div class="bank-card">
-                        <div style="font-size:9px; color:var(--purple); font-weight:800; margin-bottom:5px;">SOPORTE 1</div>
-                        <input type="text" id="b1-ent" placeholder="Banco" oninput="autoSave()"><input type="text" id="b1-fec" placeholder="Fecha" style="margin-top:5px;" oninput="autoSave()">
+                        <div class="bank-label" style="color:var(--blue);">SOPORTE 1</div>
+                        <input type="text" id="b1-ent" placeholder="Banco / Entidad" oninput="autoSave()">
+                        <input type="text" id="b1-fec" placeholder="Fecha soporte" oninput="autoSave()">
                     </div>
                     <div class="bank-card">
-                        <div style="font-size:9px; color:var(--purple); font-weight:800; margin-bottom:5px;">SOPORTE 2</div>
-                        <input type="text" id="b2-ent" placeholder="Banco" oninput="autoSave()"><input type="text" id="b2-fec" placeholder="Fecha" style="margin-top:5px;" oninput="autoSave()">
+                        <div class="bank-label" style="color:var(--blue);">SOPORTE 2</div>
+                        <input type="text" id="b2-ent" placeholder="Banco / Entidad" oninput="autoSave()">
+                        <input type="text" id="b2-fec" placeholder="Fecha soporte" oninput="autoSave()">
                     </div>
                     <div class="bank-card">
-                        <div style="font-size:9px; color:var(--purple); font-weight:800; margin-bottom:5px;">PAGO FINAL</div>
-                        <input type="text" id="b3-ent" placeholder="Banco Pago" oninput="autoSave()"><input type="text" id="b3-fec" placeholder="Fecha Pago" style="margin-top:5px;" oninput="updateKPI(); autoSave()">
+                        <div class="bank-label" style="color:var(--green);">PAGO FINAL</div>
+                        <input type="text" id="b3-ent" placeholder="Banco Pago" oninput="autoSave()">
+                        <input type="text" id="b3-fec" placeholder="Fecha Pago" oninput="updateKPI();autoSave()">
                     </div>
                 </div>
             </div>
 
-            <div class="upload-box" onclick="document.getElementById('file-inp').click()">
-                <i class="ti ti-cloud-upload" style="font-size:40px;color:var(--purple2);"></i>
-                <h3 style="margin-top:10px;">Analizar Archivos Reales</h3>
-                <p style="font-size:12px; color:var(--txt3);">Suba PDFs o Imágenes para extraer datos automáticamente.</p>
-                <input type="file" id="file-inp" hidden multiple onchange="analizarArchivo(this.files)">
+            <!-- Upload Box -->
+            <div class="upload-box" id="drop-zone" onclick="document.getElementById('file-inp').click()"
+                 ondragover="event.preventDefault();this.style.borderColor='var(--cyan)'"
+                 ondragleave="this.style.borderColor='var(--border2)'"
+                 ondrop="event.preventDefault();this.style.borderColor='var(--border2)';analizarArchivo(event.dataTransfer.files)">
+                <i class="ti ti-cloud-upload" style="font-size:42px;color:var(--purple2);"></i>
+                <h3>Analizar Archivos con Inteligencia Artificial</h3>
+                <p>Sube PDFs o Imágenes — la IA extrae TODOS los datos automáticamente</p>
+                <p style="margin-top:6px;font-size:10px;color:var(--border3);">Arrastra y suelta o haz clic · PDF, PNG, JPG, JPEG</p>
+                <input type="file" id="file-inp" hidden multiple accept=".pdf,.png,.jpg,.jpeg"
+                       onchange="analizarArchivo(this.files)">
             </div>
-            <div id="file-list" style="margin-top:15px;"></div>
+
+            <div id="file-list" style="margin-top:4px;"></div>
+            <div id="ai-log"></div>
         </div>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-    const GS_URL = "https://script.google.com/macros/s/AKfycbzOtIoI-3ptjVRBIYTulGnc03sLLgrcYk3BKw9Zwp0T-lG67QiKwXNNHcqR9FpeJHIb/exec";
-    let historial = [];
-    let currentId = null;
-    let timer;
+// ═══════════════════════════════════════════════════════
+//  CONFIGURACIÓN
+// ═══════════════════════════════════════════════════════
+const GS_URL = "https://script.google.com/macros/s/AKfycbzOtIoI-3ptjVRBIYTulGnc03sLLgrcYk3BKw9Zwp0T-lG67QiKwXNNHcqR9FpeJHIb/exec";
 
-    function capturar() {
-        const fileNames = Array.from(document.querySelectorAll('#file-list span')).map(s => s.textContent);
-        const itemFactura = currentId ? (historial.findIndex(h => h.id === currentId) + 1) : (historial.length + 1);
-        return {
-            id: currentId, orden: document.getElementById('inp-orden').value, factura: document.getElementById('inp-factura').value,
-            itemFactura: itemFactura, fFactura: document.getElementById('inp-f-factura').value, fOferta: document.getElementById('inp-f-oferta').value,
-            fFijacion: document.getElementById('inp-f-fijacion').value, ny: document.getElementById('inp-ny').value, trm: document.getElementById('inp-trm').value,
-            dif: document.getElementById('inp-dif').value, total: document.getElementById('inp-v-total').value, ret: document.getElementById('inp-ret').value,
-            pagar: document.getElementById('inp-v-pagar').value, estado: document.getElementById('inp-estado-final').value, fileNames: fileNames,
-            bancos: [ { ent: document.getElementById('b1-ent').value, fec: document.getElementById('b1-fec').value },
-                      { ent: document.getElementById('b2-ent').value, fec: document.getElementById('b2-fec').value },
-                      { ent: document.getElementById('b3-ent').value, fec: document.getElementById('b3-fec').value } ]
-        };
-    }
+// Claude API — la clave se inyecta automáticamente cuando se ejecuta desde Claude.ai
+const CLAUDE_MODEL = "claude-sonnet-4-20250514";
 
-    async function sync(action = "SAVE", override = null) {
-        const data = override || capturar();
-        data.action = action;
-        document.getElementById('sync-label').textContent = "SINCRONIZANDO...";
+// ═══════════════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ═══════════════════════════════════════════════════════
+let historial = [];
+let currentId = null;
+let saveTimer;
+
+// ═══════════════════════════════════════════════════════
+//  PROMPT DE EXTRACCIÓN (muy detallado)
+// ═══════════════════════════════════════════════════════
+const EXTRACTION_PROMPT = `Eres un asistente experto en análisis de documentos comerciales colombianos relacionados con compraventa de café y productos agropecuarios. 
+Analiza TODOS los documentos adjuntos (puede ser una oferta mercantil, orden de compra, factura de venta, conformidad de pago, aceptación de orden, u otro documento comercial).
+
+Extrae TODA la información disponible y responde ÚNICAMENTE con un JSON válido con esta estructura exacta (sin texto adicional, sin markdown, sin backticks):
+
+{
+  "orden_compra": "",
+  "n_factura": "",
+  "fecha_factura": "",
+  "fecha_oferta": "",
+  "fecha_fijacion": "",
+  "bolsa_ny": "",
+  "trm": "",
+  "diferencial": "",
+  "valor_total": "",
+  "retencion": "",
+  "total_pagar": "",
+  "estado_final": "",
+  "proveedor": "",
+  "comprador": "",
+  "cantidad": "",
+  "precio_unitario": "",
+  "descripcion_producto": "",
+  "banco_soporte1": "",
+  "fecha_soporte1": "",
+  "banco_soporte2": "",
+  "fecha_soporte2": "",
+  "banco_pago_final": "",
+  "fecha_pago_final": "",
+  "notas": ""
+}
+
+REGLAS CRÍTICAS:
+- "orden_compra": número PER-XXXX-XX o similar
+- "n_factura": número(s) de factura separados por coma si hay varios (FV-XXX, CHA-XXX, CMAA-XXX, etc.)
+- "fecha_factura": fecha de emisión de la factura en formato DD/MM/YYYY
+- "fecha_oferta": fecha de la oferta mercantil en formato DD/MM/YYYY
+- "fecha_fijacion": fecha de fijación del precio en formato DD/MM/YYYY
+- "bolsa_ny": precio bolsa New York en centavos de dólar por libra (ej: "125.50 ¢/lb")
+- "trm": tasa de cambio USD/COP (ej: "4250.00")
+- "diferencial": diferencial de precio (ej: "-25" o "+10")
+- "valor_total": valor total de la factura en pesos colombianos con formato (ej: "12.500.000")
+- "retencion": valor de retención en fuente si aparece
+- "total_pagar": total neto a pagar después de descuentos
+- "estado_final": PAGADO, PENDIENTE, PARCIAL, APROBADO, etc. según el documento
+- "proveedor": nombre completo del proveedor/vendedor/cooperativa
+- "comprador": nombre de la empresa compradora
+- "cantidad": cantidad de sacos, kg o arrobas
+- "precio_unitario": precio por unidad/saco/kg
+- "descripcion_producto": tipo de café o producto (ej: "Café pergamino seco")
+- Los campos bancarios: banco y fecha de los comprobantes o soportes de pago
+- "notas": cualquier observación relevante adicional
+- Si un campo no aparece en el documento, deja el string vacío ""
+- NO inventes datos. Solo extrae lo que REALMENTE está en el documento.`;
+
+// ═══════════════════════════════════════════════════════
+//  HELPERS UI
+// ═══════════════════════════════════════════════════════
+function setSync(msg, color='var(--green)', spinning=false) {
+    document.getElementById('sync-label').style.color = color;
+    document.getElementById('sync-label').textContent = msg;
+    const dot = document.getElementById('sync-dot');
+    dot.style.background = color;
+    spinning ? dot.classList.add('spin') : dot.classList.remove('spin');
+}
+
+function log(msg, type='info') {
+    const el = document.getElementById('ai-log');
+    el.style.display = 'block';
+    const d = document.createElement('div');
+    d.className = `log-entry ${type}`;
+    d.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    el.appendChild(d);
+    el.scrollTop = el.scrollHeight;
+}
+
+function showOverlay(msg='ANALIZANDO DOCUMENTOS...', progress='') {
+    document.getElementById('ai-msg-main').textContent = msg;
+    document.getElementById('ai-files-progress').textContent = progress;
+    document.getElementById('ai-overlay').classList.add('visible');
+}
+function hideOverlay() {
+    document.getElementById('ai-overlay').classList.remove('visible');
+}
+
+// ═══════════════════════════════════════════════════════
+//  CONVERTIR ARCHIVO A BASE64
+// ═══════════════════════════════════════════════════════
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// ═══════════════════════════════════════════════════════
+//  DETECTAR MEDIA TYPE
+// ═══════════════════════════════════════════════════════
+function getMediaType(file) {
+    const ext = file.name.split('.').pop().toLowerCase();
+    const map = {
+        pdf: 'application/pdf',
+        png: 'image/png',
+        jpg: 'image/jpeg',
+        jpeg: 'image/jpeg',
+        webp: 'image/webp'
+    };
+    return map[ext] || file.type || 'application/pdf';
+}
+
+// ═══════════════════════════════════════════════════════
+//  LLAMAR A CLAUDE API CON TODOS LOS ARCHIVOS
+// ═══════════════════════════════════════════════════════
+async function analizarConClaude(files) {
+    const contentBlocks = [];
+
+    // Texto del prompt primero
+    contentBlocks.push({ type: 'text', text: EXTRACTION_PROMPT });
+
+    // Adjuntar cada archivo como bloque de documento o imagen
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        showOverlay('LEYENDO ARCHIVOS...', `Procesando ${i+1}/${files.length}: ${file.name}`);
+        log(`Cargando: ${file.name}`, 'info');
+
         try {
-            await fetch(GS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-            document.getElementById('sync-label').textContent = "SINCRONIZADO EN NUBE";
-        } catch (e) {
-            document.getElementById('sync-label').textContent = "ERROR CONEXIÓN";
+            const b64 = await fileToBase64(file);
+            const mediaType = getMediaType(file);
+
+            if (mediaType === 'application/pdf') {
+                contentBlocks.push({
+                    type: 'document',
+                    source: { type: 'base64', media_type: 'application/pdf', data: b64 }
+                });
+            } else {
+                contentBlocks.push({
+                    type: 'image',
+                    source: { type: 'base64', media_type: mediaType, data: b64 }
+                });
+            }
+            log(`✓ Cargado: ${file.name}`, 'ok');
+        } catch (err) {
+            log(`✗ Error cargando ${file.name}: ${err.message}`, 'err');
         }
     }
 
-    function autoSave() {
-        if(!currentId) return;
-        const index = historial.findIndex(h => h.id === currentId);
-        if(index > -1) { historial[index] = capturar(); renderHist(); }
-        clearTimeout(timer);
-        timer = setTimeout(() => sync("SAVE"), 1500);
+    showOverlay('EXTRAYENDO DATOS CON IA...', `Analizando ${files.length} documento(s) simultáneamente`);
+    log('Enviando a Claude para extracción...', 'info');
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            model: CLAUDE_MODEL,
+            max_tokens: 1000,
+            messages: [{ role: 'user', content: contentBlocks }]
+        })
+    });
+
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`API Error ${response.status}: ${errText}`);
     }
 
-    // MOTOR DE ANÁLISIS REAL
-    function analizarArchivo(files) {
-        if(!files.length) return;
-        currentId = Date.now();
-        const list = document.getElementById('file-list');
-        list.innerHTML = '';
-        
-        let facs = [];
-        let ord = "ANALIZANDO...";
+    const data = await response.json();
+    const rawText = data.content
+        .filter(b => b.type === 'text')
+        .map(b => b.text)
+        .join('');
 
-        Array.from(files).forEach(f => {
-            const name = f.name.toUpperCase();
-            
-            // Búsqueda de N° de Orden
-            const mOrden = name.match(/PER-[\w-]+/);
-            if(mOrden) ord = mOrden[0];
+    log(`Respuesta recibida (${rawText.length} chars)`, 'info');
 
-            // Búsqueda de Facturas
-            const mFac = name.match(/(FE|FV|CHA|CMAA)-[\w-]+/g);
-            if(mFac) mFac.forEach(m => facs.push(m));
+    // Limpiar posibles backticks de markdown
+    const cleaned = rawText.replace(/```json|```/g, '').trim();
 
-            list.innerHTML += `<div class="file-card"><i class="ti ti-file-check" style="color:var(--green)"></i> <span>${f.name}</span></div>`;
-        });
+    try {
+        const parsed = JSON.parse(cleaned);
+        log('✓ JSON extraído correctamente', 'ok');
+        return parsed;
+    } catch (e) {
+        log(`Error parseando JSON: ${e.message}`, 'err');
+        log(`Raw: ${cleaned.substring(0, 200)}`, 'err');
+        return null;
+    }
+}
 
-        // Limpiar para datos nuevos y asignar valores extraídos de tus documentos reales
-        document.getElementById('inp-orden').value = ord;
-        document.getElementById('inp-factura').value = [...new Set(facs)].join(", ");
-        document.getElementById('inp-f-oferta').value = "19/01/2026";
-        document.getElementById('inp-f-fijacion').value = "17/01/2026";
-        document.getElementById('inp-ny').value = 337.50;
-        document.getElementById('inp-trm').value = 3685;
-        document.getElementById('inp-dif').value = 20;
-        document.getElementById('inp-v-total').value = 603834750;
-        document.getElementById('inp-v-pagar').value = 357955659;
-        document.getElementById('inp-estado-final').value = "VALIDADO";
-        document.getElementById('b3-ent').value = "BANCOLOMBIA";
-        document.getElementById('b3-fec').value = "29/01/2026";
+// ═══════════════════════════════════════════════════════
+//  FUNCIÓN PRINCIPAL: ANALIZAR ARCHIVOS
+// ═══════════════════════════════════════════════════════
+async function analizarArchivo(files) {
+    if (!files || !files.length) return;
+
+    currentId = Date.now();
+    document.getElementById('ai-log').innerHTML = '';
+    document.getElementById('ai-log').style.display = 'none';
+    document.getElementById('file-list').innerHTML = '';
+
+    // Mostrar cards de archivos
+    Array.from(files).forEach(f => {
+        document.getElementById('file-list').innerHTML += `
+            <div class="file-card" id="fc-${f.name.replace(/\s/g,'_')}">
+                <i class="ti ti-file-text" style="color:var(--blue)"></i>
+                <span>${f.name}</span>
+                <span class="fc-status" id="fcs-${f.name.replace(/\s/g,'_')}">PROCESANDO...</span>
+            </div>`;
+    });
+
+    showOverlay('INICIANDO ANÁLISIS IA...', '');
+
+    let extracted = null;
+    try {
+        extracted = await analizarConClaude(Array.from(files));
+    } catch (err) {
+        hideOverlay();
+        log(`ERROR CRÍTICO: ${err.message}`, 'err');
+        setSync('ERROR DE API', 'var(--red)', false);
+        alert('Error al comunicarse con la IA: ' + err.message);
+        return;
+    }
+
+    hideOverlay();
+
+    // Actualizar status de cada archivo
+    Array.from(files).forEach(f => {
+        const el = document.getElementById(`fcs-${f.name.replace(/\s/g,'_')}`);
+        if (el) el.textContent = '✓ ANALIZADO';
+        const card = document.getElementById(`fc-${f.name.replace(/\s/g,'_')}`);
+        if (card) { 
+            card.querySelector('i').style.color = 'var(--green)';
+        }
+    });
+
+    if (extracted) {
+        // Llenar todos los campos
+        setField('inp-orden',         extracted.orden_compra);
+        setField('inp-factura',        extracted.n_factura);
+        setField('inp-f-oferta',       extracted.fecha_oferta);
+        setField('inp-f-fijacion',     extracted.fecha_fijacion);
+        setField('inp-ny',             extracted.bolsa_ny);
+        setField('inp-trm',            extracted.trm);
+        setField('inp-dif',            extracted.diferencial);
+        setField('inp-ret',            extracted.retencion);
+        setField('inp-f-factura',      extracted.fecha_factura);
+        setField('inp-v-total',        extracted.valor_total);
+        setField('inp-v-pagar',        extracted.total_pagar);
+        setField('inp-estado-final',   extracted.estado_final);
+        setField('inp-proveedor',      extracted.proveedor);
+        setField('inp-comprador',      extracted.comprador);
+        setField('inp-cantidad',       extracted.cantidad);
+        setField('inp-precio-unit',    extracted.precio_unitario);
+        setField('inp-descripcion',    extracted.descripcion_producto);
+        setField('inp-notas',          extracted.notas);
+        setField('b1-ent',             extracted.banco_soporte1);
+        setField('b1-fec',             extracted.fecha_soporte1);
+        setField('b2-ent',             extracted.banco_soporte2);
+        setField('b2-fec',             extracted.fecha_soporte2);
+        setField('b3-ent',             extracted.banco_pago_final);
+        setField('b3-fec',             extracted.fecha_pago_final);
 
         document.getElementById('stat-docs').textContent = files.length;
-        document.getElementById('stat-estado').textContent = "ANALIZADO";
-        document.getElementById('label-proceso').textContent = `PROCESO: ${ord}`;
+        document.getElementById('stat-estado').textContent = extracted.estado_final || 'ANALIZADO';
+        document.getElementById('label-proceso').textContent = extracted.orden_compra ? `PROCESO: ${extracted.orden_compra}` : '';
 
-        const data = capturar();
-        historial.unshift(data);
-        renderHist();
-        sync("SAVE", data);
         updateKPI();
+        log('✓ Todos los campos poblados', 'ok');
     }
 
-    function cargar(id) {
-        const h = historial.find(x => x.id === id);
-        if(!h) return;
-        currentId = id;
-        document.getElementById('inp-orden').value = h.orden;
-        document.getElementById('inp-factura').value = h.factura;
-        document.getElementById('inp-f-oferta').value = h.fOferta;
-        document.getElementById('inp-f-fijacion').value = h.fFijacion;
-        document.getElementById('inp-ny').value = h.ny;
-        document.getElementById('inp-trm').value = h.trm;
-        document.getElementById('inp-dif').value = h.dif;
-        document.getElementById('inp-ret').value = h.ret;
-        document.getElementById('inp-f-factura').value = h.fFactura;
-        document.getElementById('inp-v-total').value = h.total;
-        document.getElementById('inp-v-pagar').value = h.pagar;
-        document.getElementById('inp-estado-final').value = h.estado;
-        h.bancos.forEach((b, i) => {
-            document.getElementById(`b${i+1}-ent`).value = b.ent;
-            document.getElementById(`b${i+1}-fec`).value = b.fec;
+    // Guardar en historial y nube
+    const data = capturar();
+    data.id = currentId;
+    historial.unshift(data);
+    renderHist();
+    await sync('SAVE', data);
+
+    // Reset file input
+    document.getElementById('file-inp').value = '';
+}
+
+function setField(id, val) {
+    const el = document.getElementById(id);
+    if (el && val) el.value = val;
+}
+
+// ═══════════════════════════════════════════════════════
+//  CAPTURAR ESTADO ACTUAL
+// ═══════════════════════════════════════════════════════
+function capturar() {
+    const fileNames = Array.from(document.querySelectorAll('#file-list .file-card span'))
+        .filter((_, i) => i % 1 === 0) // solo el primer span (nombre)
+        .map(s => s.textContent);
+
+    const idx = currentId ? historial.findIndex(h => h.id === currentId) : -1;
+    const itemFactura = idx > -1 ? idx + 1 : historial.length + 1;
+
+    return {
+        id: currentId,
+        orden:       v('inp-orden'),
+        factura:     v('inp-factura'),
+        itemFactura: itemFactura,
+        fFactura:    v('inp-f-factura'),
+        fOferta:     v('inp-f-oferta'),
+        fFijacion:   v('inp-f-fijacion'),
+        ny:          v('inp-ny'),
+        trm:         v('inp-trm'),
+        dif:         v('inp-dif'),
+        total:       v('inp-v-total'),
+        ret:         v('inp-ret'),
+        pagar:       v('inp-v-pagar'),
+        estado:      v('inp-estado-final'),
+        proveedor:   v('inp-proveedor'),
+        comprador:   v('inp-comprador'),
+        cantidad:    v('inp-cantidad'),
+        precioUnit:  v('inp-precio-unit'),
+        descripcion: v('inp-descripcion'),
+        notas:       v('inp-notas'),
+        fileNames:   fileNames,
+        bancos: [
+            { ent: v('b1-ent'), fec: v('b1-fec') },
+            { ent: v('b2-ent'), fec: v('b2-fec') },
+            { ent: v('b3-ent'), fec: v('b3-fec') }
+        ]
+    };
+}
+
+function v(id) {
+    const el = document.getElementById(id);
+    return el ? el.value : '';
+}
+
+// ═══════════════════════════════════════════════════════
+//  SYNC CON GOOGLE SHEETS
+// ═══════════════════════════════════════════════════════
+async function sync(action = 'SAVE', overrideData = null) {
+    const data = overrideData || capturar();
+    data.action = action;
+    setSync('SINCRONIZANDO...', 'var(--amber)', true);
+    try {
+        await fetch(GS_URL, {
+            method: 'POST', mode: 'no-cors',
+            body: JSON.stringify(data)
         });
-        document.getElementById('file-list').innerHTML = h.fileNames.map(n => `<div class="file-card"><i class="ti ti-file-check" style="color:var(--green)"></i> <span>${n}</span></div>`).join('');
-        document.getElementById('stat-docs').textContent = h.fileNames.length;
-        document.getElementById('label-proceso').textContent = `PROCESO: ${h.orden}`;
-        updateKPI();
-        renderHist();
+        setSync('SINCRONIZADO EN NUBE', 'var(--green)', false);
+    } catch (e) {
+        setSync('ERROR DE RED', 'var(--red)', false);
     }
+}
 
-    function renderHist() {
-        const c = document.getElementById('historial-container');
-        c.innerHTML = historial.length ? '' : '<div style="padding:20px; font-size:11px; color:var(--txt3); text-align:center;">Sin registros</div>';
-        historial.forEach(h => {
-            const div = document.createElement('div');
-            div.className = `history-item ${currentId === h.id ? 'active' : ''}`;
-            div.innerHTML = `
-                <i class="ti ti-trash delete-btn" onclick="borrarRegistro(${h.id}, event)"></i>
-                <div onclick="cargar(${h.id})">
-                    <span class="h-name">${h.orden}</span>
-                    <div class="h-meta"><span>Fac: ${h.factura}</span><span>$${Number(h.total).toLocaleString()}</span></div>
-                </div>`;
-            c.appendChild(div);
-        });
-    }
+// ═══════════════════════════════════════════════════════
+//  AUTO SAVE (con debounce)
+// ═══════════════════════════════════════════════════════
+function autoSave() {
+    if (!currentId) return;
+    const idx = historial.findIndex(h => h.id === currentId);
+    if (idx > -1) { historial[idx] = capturar(); renderHist(); }
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => sync('SAVE'), 2000);
+}
 
-    async function borrarRegistro(id, e) {
-        e.stopPropagation();
-        if(confirm("¿Eliminar este registro de Google Sheets y el Dashboard?")) {
-            await sync("DELETE", { id: id });
-            historial = historial.filter(x => x.id !== id);
-            if(currentId === id) resetForm();
-            renderHist();
-        }
+// ═══════════════════════════════════════════════════════
+//  HISTORIAL
+// ═══════════════════════════════════════════════════════
+function renderHist() {
+    const c = document.getElementById('historial-container');
+    if (!historial.length) {
+        c.innerHTML = '<div style="padding:20px;font-size:11px;color:var(--txt3);text-align:center;font-family:var(--mono);">Sin registros</div>';
+        return;
     }
+    c.innerHTML = '';
+    historial.forEach(h => {
+        const div = document.createElement('div');
+        div.className = `history-item ${currentId === h.id ? 'active' : ''}`;
+        const totalFmt = h.total ? '$' + Number(String(h.total).replace(/[^0-9]/g, '')).toLocaleString() : '$0';
+        div.innerHTML = `
+            <i class="ti ti-trash delete-btn" onclick="borrarRegistro(${h.id}, event)" title="Eliminar"></i>
+            <div onclick="cargar(${h.id})">
+                <div class="h-name">${h.orden || 'Sin orden...'}</div>
+                <div class="h-meta">
+                    <span>${(h.factura || '').substring(0, 14)}${(h.factura||'').length > 14 ? '...' : ''}</span>
+                    <span>${totalFmt}</span>
+                </div>
+                <div class="h-status">${h.estado || 'CARGADO'}</div>
+            </div>`;
+        c.appendChild(div);
+    });
+}
 
-    async function borrarTodo() {
-        if(confirm("¿Eliminar TODO de la Nube?")) {
-            for(let h of historial) await sync("DELETE", { id: h.id });
-            historial = []; resetForm(); renderHist();
-        }
-    }
+function cargar(id) {
+    const h = historial.find(x => x.id === id);
+    if (!h) return;
+    currentId = id;
 
-    function resetForm() {
-        currentId = null;
-        document.querySelectorAll('input').forEach(i => i.value = '');
-        document.getElementById('file-list').innerHTML = '';
-        document.getElementById('stat-docs').textContent = '0';
-        document.getElementById('label-proceso').textContent = '';
-        updateKPI();
-    }
+    setField('inp-orden',       h.orden);
+    setField('inp-factura',     h.factura);
+    setField('inp-f-oferta',    h.fOferta);
+    setField('inp-f-fijacion',  h.fFijacion);
+    setField('inp-ny',          h.ny);
+    setField('inp-trm',         h.trm);
+    setField('inp-dif',         h.dif);
+    setField('inp-ret',         h.ret);
+    setField('inp-f-factura',   h.fFactura);
+    setField('inp-v-total',     h.total);
+    setField('inp-v-pagar',     h.pagar);
+    setField('inp-estado-final',h.estado);
+    setField('inp-proveedor',   h.proveedor);
+    setField('inp-comprador',   h.comprador);
+    setField('inp-cantidad',    h.cantidad);
+    setField('inp-precio-unit', h.precioUnit);
+    setField('inp-descripcion', h.descripcion);
+    setField('inp-notas',       h.notas);
+    setField('b1-ent', h.bancos[0]?.ent); setField('b1-fec', h.bancos[0]?.fec);
+    setField('b2-ent', h.bancos[1]?.ent); setField('b2-fec', h.bancos[1]?.fec);
+    setField('b3-ent', h.bancos[2]?.ent); setField('b3-fec', h.bancos[2]?.fec);
 
-    function updateKPI() {
-        const t = document.getElementById('inp-v-total').value;
-        const p = document.getElementById('inp-v-pagar').value;
-        document.getElementById('stat-val').textContent = t ? '$' + Number(t).toLocaleString() : '$0';
-        document.getElementById('stat-pay').textContent = p ? '$' + Number(p).toLocaleString() : '$0';
-        document.getElementById('stat-pago').textContent = document.getElementById('b3-fec').value || '--/--/--';
-    }
+    document.getElementById('file-list').innerHTML = (h.fileNames || []).map(n => `
+        <div class="file-card">
+            <i class="ti ti-file-check" style="color:var(--green)"></i>
+            <span>${n}</span>
+            <span class="fc-status">✓ ANALIZADO</span>
+        </div>`).join('');
 
-    function exportExcel() {
-        const d = capturar();
-        if(!d.orden) return alert("Sin datos");
-        const ws = XLSX.utils.json_to_sheet([d]);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Reporte");
-        XLSX.writeFile(wb, `Reporte_${d.orden}.xlsx`);
+    document.getElementById('stat-docs').textContent = (h.fileNames || []).length;
+    document.getElementById('label-proceso').textContent = h.orden ? `PROCESO: ${h.orden}` : '';
+    updateKPI();
+    renderHist();
+}
+
+async function borrarRegistro(id, e) {
+    e.stopPropagation();
+    if (!confirm('¿Eliminar este registro de la Nube y del Dashboard?')) return;
+    await sync('DELETE', { id: id });
+    historial = historial.filter(x => x.id !== id);
+    if (currentId === id) resetForm();
+    renderHist();
+}
+
+async function borrarTodo() {
+    if (!confirm('ATENCIÓN: Se eliminarán TODOS los registros de Google Sheets. ¿Continuar?')) return;
+    for (const h of historial) {
+        await sync('DELETE', { id: h.id });
     }
+    historial = [];
+    resetForm();
+    renderHist();
+}
+
+// ═══════════════════════════════════════════════════════
+//  RESET / KPI / EXPORT
+// ═══════════════════════════════════════════════════════
+function resetInputs() {
+    document.querySelectorAll('input').forEach(i => i.value = '');
+}
+
+function resetForm() {
+    currentId = null;
+    resetInputs();
+    document.getElementById('file-list').innerHTML = '';
+    document.getElementById('ai-log').innerHTML = '';
+    document.getElementById('ai-log').style.display = 'none';
+    document.getElementById('stat-docs').textContent = '0';
+    document.getElementById('label-proceso').textContent = '';
+    document.getElementById('stat-estado').textContent = 'SIN DATOS';
+    renderHist();
+    updateKPI();
+}
+
+function updateKPI() {
+    const t = v('inp-v-total').replace(/[^0-9.]/g, '');
+    const p = v('inp-v-pagar').replace(/[^0-9.]/g, '');
+    document.getElementById('stat-val').textContent = t ? '$' + Number(t).toLocaleString() : '$0';
+    document.getElementById('stat-pay').textContent = p ? '$' + Number(p).toLocaleString() : '$0';
+    document.getElementById('stat-pago').textContent = v('b3-fec') || '--/--/--';
+    const est = v('inp-estado-final');
+    if (est) {
+        document.getElementById('stat-estado').textContent = est;
+        document.getElementById('stat-estado').style.color =
+            est.includes('PAG') ? 'var(--green)' :
+            est.includes('PEND') ? 'var(--amber)' : 'var(--cyan)';
+    }
+}
+
+function exportExcel() {
+    const d = capturar();
+    if (!d.orden && !d.factura) { alert('No hay datos para exportar.'); return; }
+
+    const exportData = {
+        'ID Análisis':       d.id,
+        'Orden Compra':      d.orden,
+        'N° Factura':        d.factura,
+        'Item Factura':      d.itemFactura,
+        'Fecha Factura':     d.fFactura,
+        'Fecha Oferta':      d.fOferta,
+        'Fecha Fijación':    d.fFijacion,
+        'Bolsa NY':          d.ny,
+        'TRM':               d.trm,
+        'Diferencial':       d.dif,
+        'Valor Total':       d.total,
+        'Retención':         d.ret,
+        'Total a Pagar':     d.pagar,
+        'Estado':            d.estado,
+        'Proveedor':         d.proveedor,
+        'Comprador':         d.comprador,
+        'Cantidad':          d.cantidad,
+        'Precio Unitario':   d.precioUnit,
+        'Descripción':       d.descripcion,
+        'Notas':             d.notas,
+        'Banco Soporte 1':   d.bancos[0].ent,
+        'Fecha Soporte 1':   d.bancos[0].fec,
+        'Banco Soporte 2':   d.bancos[1].ent,
+        'Fecha Soporte 2':   d.bancos[1].fec,
+        'Banco Pago Final':  d.bancos[2].ent,
+        'Fecha Pago Final':  d.bancos[2].fec,
+        'Archivos':          (d.fileNames || []).join(', ')
+    };
+
+    const ws = XLSX.utils.json_to_sheet([exportData]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Reporte');
+    XLSX.writeFile(wb, `DocAnalytics_${d.orden || d.factura || 'Reporte'}.xlsx`);
+}
 </script>
 </body>
 </html>
