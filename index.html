@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DocAnalytics Pro - Gestión Gerencial</title>
+    <title>DocAnalytics Pro - Gestión de Facturación Real</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <style>
         *{box-sizing:border-box;margin:0;padding:0;}
@@ -17,73 +17,50 @@
             --r:8px;--rl:12px;
         }
         body { background: var(--bg); color: var(--txt); font-family: var(--font-sans); padding: 20px; }
-        .wrap{display:flex;background:var(--bg2);border-radius:var(--rl);border:1px solid var(--border);overflow:hidden;min-height:95vh; max-width: 1500px; margin: 0 auto; box-shadow: 0 20px 50px rgba(0,0,0,0.5);}
+        .wrap{display:flex;background:var(--bg2);border-radius:var(--rl);border:1px solid var(--border);overflow:hidden;min-height:95vh; max-width: 1550px; margin: 0 auto;}
         
         /* Sidebar */
         .sidebar{width:280px;flex-shrink:0;background:var(--bg3);border-right:1px solid var(--border);display:flex;flex-direction:column;}
         .logo{padding:25px;border-bottom:1px solid var(--border);text-align:center;}
-        .logo-icon{width:45px;height:45px;background:var(--purple);border-radius:12px;display:flex;align-items:center;justify-content:center;margin: 0 auto 12px; box-shadow: 0 0 15px var(--purple2);}
+        .logo-icon{width:45px;height:45px;background:var(--purple);border-radius:12px;display:flex;align-items:center;justify-content:center;margin: 0 auto 12px;}
         .logo-name{font-size:18px;font-weight:800;letter-spacing:1px; color:#fff;}
-        .nav-item{display:flex;align-items:center;gap:12px;padding:14px 20px;font-size:13px;color:var(--txt2);cursor:pointer;transition:0.2s; font-weight: 500;}
+        .nav-item{display:flex;align-items:center;gap:12px;padding:15px 20px;font-size:13px;color:var(--txt2);cursor:pointer;transition:0.2s;}
         .nav-item:hover, .nav-item.act{background:var(--bg4);color:var(--txt);}
 
         /* Historial */
-        .history-title { font-size: 10px; color: var(--txt3); font-weight: 800; padding: 20px 20px 10px; text-transform: uppercase; letter-spacing: 1.5px; border-top: 1px solid var(--border); margin-top: 10px;}
         .history-section { flex: 1; overflow-y: auto; padding-bottom: 20px; }
         .history-item { padding: 15px 20px; border-bottom: 1px solid #ffffff05; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
         .history-item:hover { background: var(--bg4); }
         .history-item.active { background: var(--purple3); border-left-color: var(--purple); }
-        .history-item .h-name { font-size: 13px; font-weight: 700; color: #fff; display: block; margin-bottom: 4px;}
-        .history-item .h-meta { font-size: 11px; color: var(--txt3); display: flex; justify-content: space-between; }
+        .history-item .h-name { font-size: 13px; font-weight: 700; color: #fff; display: block; }
+        .history-item .h-meta { font-size: 11px; color: var(--txt3); margin-top:5px; display:flex; justify-content:space-between; }
 
         /* Main Content */
-        .main{flex:1;display:flex;flex-direction:column;min-width:0; background: var(--bg2);}
+        .main{flex:1;display:flex;flex-direction:column;min-width:0;}
         .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 30px;background:var(--bg3);border-bottom:1px solid var(--border);}
-        .tb-title { font-size: 16px; font-weight: 700; color: var(--txt); }
         .content{padding:25px 30px; overflow-y: auto;}
         
         /* KPIs */
         .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:15px;margin-bottom:25px;}
-        .kpi{background:var(--bg3);border:1px solid var(--border);padding:18px;border-radius:var(--rl);position:relative; transition: 0.3s;}
-        .kpi:hover { border-color: var(--border2); transform: translateY(-2px); }
-        .kpi-lbl{font-size:10px;color:var(--txt3);font-weight:700;margin-bottom:8px;text-transform:uppercase; letter-spacing: 0.5px;}
+        .kpi{background:var(--bg3);border:1px solid var(--border);padding:18px;border-radius:var(--rl);border-left:4px solid var(--border2);}
+        .kpi-lbl{font-size:10px;color:var(--txt3);font-weight:700;margin-bottom:8px;text-transform:uppercase;}
         .kpi-n{font-size:18px;font-weight:800; color: #fff;}
-        .kpi.purple{border-left:4px solid var(--purple);}
-        .kpi.green{border-left:4px solid var(--green);}
-        .kpi.blue{border-left:4px solid var(--blue);}
 
-        /* Panel Datos */
-        .panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:25px;margin-bottom:25px; position: relative;}
-        .panel-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+        /* Formulario */
+        .panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:25px;margin-bottom:25px;}
         table{width:100%;border-collapse:collapse;}
-        th{text-align:left;color:var(--txt3);font-size:11px;padding:12px;border-bottom:1px solid var(--border);text-transform:uppercase; letter-spacing: 1px;}
-        td{padding:12px 10px;font-size:13px;border-bottom:1px solid var(--border);}
+        th{text-align:left;color:var(--txt3);font-size:10px;padding:12px;border-bottom:1px solid var(--border);text-transform:uppercase; letter-spacing: 1px;}
+        td{padding:12px 10px;border-bottom:1px solid var(--border);}
         
-        input {
-            background:var(--bg4);border:1px solid var(--border);color:var(--txt);padding:10px 14px;border-radius:6px;width:100%;font-size:13px;transition: 0.2s;
-        }
-        input:focus{outline:none;border-color:var(--purple); background: #252b3b;}
+        input { background:var(--bg4);border:1px solid var(--border);color:var(--txt);padding:10px;border-radius:6px;width:100%;font-size:13px; transition:0.2s; }
+        input:focus { border-color: var(--purple); outline:none; background: #252b3b; }
 
-        /* Bancos */
-        .bank-grid{display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 25px; border-top: 1px solid var(--border); padding-top: 25px;}
+        .bank-grid{display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px;}
         .bank-card{background: var(--bg4); padding: 15px; border-radius: var(--r); border: 1px solid var(--border2);}
-        .bank-title{font-size: 10px; color: var(--purple); font-weight: 800; margin-bottom: 10px; text-transform: uppercase;}
-
-        /* Zona de Carga */
+        
         .upload-box{border:2px dashed var(--border2);padding:40px;text-align:center;border-radius:var(--rl);background:var(--bg3);cursor:pointer; transition: 0.3s;}
         .upload-box:hover { border-color: var(--purple); background: var(--bg4); }
-        .prog-bar{height:6px;background:var(--bg);border-radius:10px;overflow:hidden;margin-top:20px;display:none;}
-        .prog-fill{height:100%;background:var(--purple);width:0%;transition:width 0.2s;}
-        .file-card{display:flex;align-items:center;gap:12px;background:var(--bg4);padding:12px 18px;border-radius:8px;margin-top:10px;border:1px solid var(--border); font-size: 12px; animation: fadeIn 0.3s ease;}
-
-        @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
-
-        .badge-sync { font-size: 10px; padding: 4px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase; }
-        .sync-ok { background: #22c97a22; color: var(--green); border: 1px solid var(--green); }
-        .sync-wait { background: #f5a62322; color: var(--amber); border: 1px solid var(--amber); }
-
-        .btn-main { background: var(--green); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px;}
-        .btn-main:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .file-card{display:flex;align-items:center;gap:12px;background:var(--bg4);padding:12px;border-radius:8px;margin-top:10px;border:1px solid var(--border); font-size: 12px;}
     </style>
 </head>
 <body>
@@ -93,156 +70,124 @@
         <div class="logo">
             <div class="logo-icon"><i class="ti ti-report-analytics" style="font-size:28px;color:#fff;"></i></div>
             <div class="logo-name">DOC ANALYTICS</div>
-            <div style="font-size:10px;color:var(--txt3); margin-top:5px;">SISTEMA GERENCIAL V6.0</div>
         </div>
-        
-        <div class="nav-item act" onclick="resetFormParaNuevo()"><i class="ti ti-plus"></i> NUEVO ANÁLISIS</div>
-        
-        <div class="history-title">HISTORIAL RECIENTE</div>
+        <div class="nav-item" onclick="resetForm()"><i class="ti ti-plus"></i> NUEVO ANÁLISIS</div>
+        <div style="font-size:10px; color:var(--txt3); padding:20px 20px 5px; font-weight:800;">HISTORIAL DE CARGA</div>
         <div class="history-section" id="historial-container"></div>
-
-        <div style="margin-top:auto; padding:25px;">
-            <button onclick="borrarTodo()" style="width:100%; padding:12px; background:var(--red); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:12px;">
-                <i class="ti ti-trash"></i> ELIMINAR TODO (NUBE)
-            </button>
-        </div>
+        <div style="padding:20px;"><button onclick="borrarTodo()" style="width:100%; padding:10px; background:var(--red); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">BORRAR NUBE</button></div>
     </div>
 
     <div class="main">
         <div class="topbar">
-            <div class="tb-title">Consolidado General de Análisis</div>
-            <div style="display:flex; gap:15px; align-items:center;">
-                <span id="sync-status" class="badge-sync sync-ok">Sincronizado</span>
-                <button class="btn-main" onclick="exportExcel()"><i class="ti ti-file-spreadsheet"></i> EXPORTAR EXCEL</button>
-            </div>
+            <div id="sync-label" style="font-size:11px; font-weight:700; color:var(--green);">CONECTADO CON GOOGLE SHEETS</div>
+            <button onclick="exportExcel()" style="background:var(--green); color:#000; border:none; padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer;">EXPORTAR EXCEL</button>
         </div>
 
         <div class="content">
-            <!-- KPIs -->
             <div class="kpi-row">
-                <div class="kpi purple"><div class="kpi-lbl">Docs Procesados</div><div class="kpi-n" id="stat-docs">0</div></div>
-                <div class="kpi green"><div class="kpi-lbl">Valor Factura</div><div class="kpi-n" id="stat-val">$0</div></div>
-                <div class="kpi blue"><div class="kpi-lbl">Último Pago</div><div class="kpi-n" id="stat-pago">--/--/----</div></div>
-                <div class="kpi green"><div class="kpi-lbl">Total a Pagar</div><div class="kpi-n" id="stat-pay">$0</div></div>
-                <div class="kpi"><div class="kpi-lbl">Estado Actual</div><div class="kpi-n" id="stat-estado" style="font-size:14px;color:var(--amber);">Sin Datos</div></div>
+                <div class="kpi" style="border-left-color:var(--purple)"><div class="kpi-lbl">Docs</div><div class="kpi-n" id="stat-docs">0</div></div>
+                <div class="kpi" style="border-left-color:var(--green)"><div class="kpi-lbl">Val. Factura</div><div class="kpi-n" id="stat-val">$0</div></div>
+                <div class="kpi" style="border-left-color:var(--blue)"><div class="kpi-lbl">Último Pago</div><div class="kpi-n" id="stat-pago">--/--/--</div></div>
+                <div class="kpi" style="border-left-color:var(--green)"><div class="kpi-lbl">Total Pagar</div><div class="kpi-n" id="stat-pay">$0</div></div>
+                <div class="kpi"><div class="kpi-lbl">Estado</div><div class="kpi-n" id="stat-estado" style="font-size:12px; color:var(--amber);">SIN DATOS</div></div>
             </div>
 
-            <!-- Panel Principal -->
             <div class="panel">
-                <div class="panel-h">
-                    <div style="font-weight:700; font-size: 14px; display:flex; align-items:center; gap:8px;"><i class="ti ti-database-export" style="color:var(--purple)"></i> DATOS TÉCNICOS EXTRAÍDOS</div>
-                    <span id="label-proceso" style="color:var(--purple); font-weight:800; font-size:12px;">MODO: ESPERA</span>
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+                    <div style="font-weight:700; font-size:14px;"><i class="ti ti-file-text"></i> DATOS REALES EXTRAÍDOS</div>
+                    <div id="label-proceso" style="color:var(--purple); font-weight:800; font-size:12px;"></div>
                 </div>
                 <table>
                     <thead>
-                        <tr>
-                            <th style="width:25%">Concepto</th>
-                            <th style="width:25%">VALOR EN DOCUMENTO</th>
-                            <th style="width:25%">Concepto</th>
-                            <th style="width:25%">VALOR EN DOCUMENTO</th>
-                        </tr>
+                        <tr><th>Concepto</th><th>VALOR EN DOCUMENTO</th><th>Concepto</th><th>VALOR EN DOCUMENTO</th></tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>N° Orden Compra</td>
-                            <td><input type="text" id="inp-orden" placeholder="Esperando..." oninput="autoSync()"></td>
-                            <td style="color:var(--blue); font-weight:800;">N° Factura (Detectadas)</td>
-                            <td><input type="text" id="inp-factura" placeholder="Múltiples facturas..." oninput="autoSync()" style="border-color: var(--blue);"></td>
+                            <td>N° Orden Compra</td><td><input type="text" id="inp-orden" oninput="autoSave()"></td>
+                            <td>N° Factura</td><td><input type="text" id="inp-factura" oninput="autoSave()"></td>
                         </tr>
                         <tr>
-                            <td>Fecha Oferta</td>
-                            <td><input type="text" id="inp-f-oferta" oninput="autoSync()"></td>
-                            <td style="color:var(--amber); font-weight:700;">Fecha Fijación (Oferta)</td>
-                            <td><input type="text" id="inp-f-fijacion" oninput="autoSync()"></td>
+                            <td>Fecha Oferta</td><td><input type="text" id="inp-f-oferta" oninput="autoSave()"></td>
+                            <td>Fecha Fijación</td><td><input type="text" id="inp-f-fijacion" oninput="autoSave()"></td>
                         </tr>
                         <tr>
-                            <td>Bolsa NY (US¢/lb)</td>
-                            <td><input type="number" id="inp-ny" step="0.01" oninput="autoSync()"></td>
-                            <td>COPFX (TRM)</td>
-                            <td><input type="number" id="inp-trm" oninput="autoSync()"></td>
+                            <td>Bolsa NY</td><td><input type="number" id="inp-ny" step="0.01" oninput="autoSave()"></td>
+                            <td>TRM</td><td><input type="number" id="inp-trm" oninput="autoSave()"></td>
                         </tr>
                         <tr>
-                            <td>Diferencial Col.</td>
-                            <td><input type="number" id="inp-dif" oninput="autoSync()"></td>
-                            <td>Retención Fuente</td>
-                            <td><input type="number" id="inp-ret" oninput="updateKPI(); autoSync()"></td>
+                            <td>Diferencial</td><td><input type="number" id="inp-dif" oninput="autoSave()"></td>
+                            <td>Retención</td><td><input type="number" id="inp-ret" oninput="updateKPI(); autoSave()"></td>
                         </tr>
                         <tr>
-                            <td>Fecha Factura</td>
-                            <td><input type="text" id="inp-f-factura" oninput="autoSync()"></td>
-                            <td style="color:var(--green); font-weight:800;">Valor Total Factura</td>
-                            <td><input type="number" id="inp-v-total" oninput="updateKPI(); autoSync()"></td>
+                            <td>Fecha Factura</td><td><input type="text" id="inp-f-factura" oninput="autoSave()"></td>
+                            <td>Valor Total</td><td><input type="number" id="inp-v-total" oninput="updateKPI(); autoSave()"></td>
                         </tr>
                         <tr>
-                            <td>Total a Pagar (COP)</td>
-                            <td><input type="number" id="inp-v-pagar" oninput="updateKPI(); autoSync()"></td>
-                            <td>Estado Final</td>
-                            <td><input type="text" id="inp-estado-final" oninput="autoSync()"></td>
+                            <td>Total a Pagar</td><td><input type="number" id="inp-v-pagar" oninput="updateKPI(); autoSave()"></td>
+                            <td>Estado Final</td><td><input type="text" id="inp-estado-final" oninput="autoSave()"></td>
                         </tr>
                     </tbody>
                 </table>
 
                 <div class="bank-grid">
                     <div class="bank-card">
-                        <div class="bank-title">Soporte Bancario 1</div>
-                        <input type="text" id="b1-ent" placeholder="Entidad" oninput="autoSync()">
-                        <input type="text" id="b1-fec" placeholder="Fecha Aplicación" style="margin-top:8px;" oninput="autoSync()">
+                        <div style="font-size:9px; color:var(--purple); font-weight:800; margin-bottom:5px;">SOPORTE 1</div>
+                        <input type="text" id="b1-ent" placeholder="Banco" oninput="autoSave()">
+                        <input type="text" id="b1-fec" placeholder="Fecha" style="margin-top:5px;" oninput="autoSave()">
                     </div>
                     <div class="bank-card">
-                        <div class="bank-title">Soporte Bancario 2</div>
-                        <input type="text" id="b2-ent" placeholder="Entidad" oninput="autoSync()">
-                        <input type="text" id="b2-fec" placeholder="Fecha Aplicación" style="margin-top:8px;" oninput="autoSync()">
+                        <div style="font-size:9px; color:var(--purple); font-weight:800; margin-bottom:5px;">SOPORTE 2</div>
+                        <input type="text" id="b2-ent" placeholder="Banco" oninput="autoSave()">
+                        <input type="text" id="b2-fec" placeholder="Fecha" style="margin-top:5px;" oninput="autoSave()">
                     </div>
                     <div class="bank-card">
-                        <div class="bank-title">Soporte Bancario 3</div>
-                        <input type="text" id="b3-ent" placeholder="Entidad" oninput="autoSync()">
-                        <input type="text" id="b3-fec" placeholder="Fecha Pago Final" style="margin-top:8px;" oninput="updateKPI(); autoSync()">
+                        <div style="font-size:9px; color:var(--purple); font-weight:800; margin-bottom:5px;">SOPORTE 3 (PAGO FINAL)</div>
+                        <input type="text" id="b3-ent" placeholder="Banco Pago" oninput="autoSave()">
+                        <input type="text" id="b3-fec" placeholder="Fecha Pago" style="margin-top:5px;" oninput="updateKPI(); autoSave()">
                     </div>
                 </div>
             </div>
 
-            <div class="upload-box" id="drop-zone" onclick="document.getElementById('file-inp').click()">
-                <i class="ti ti-cloud-upload" style="font-size:50px;color:var(--purple2); margin-bottom:10px;"></i>
-                <h3>Arrastre o seleccione documentos para analizar</h3>
-                <p style="color:var(--txt3);font-size:12px; margin-top:5px;">Formatos: PDF, JPG, PNG (Ofertas, Facturas y Soportes)</p>
-                <div class="prog-bar" id="p-bar"><div class="prog-fill" id="p-fill"></div></div>
-                <input type="file" id="file-inp" hidden multiple onchange="iniciarAnalisis(this.files)">
+            <div class="upload-box" onclick="document.getElementById('file-inp').click()">
+                <i class="ti ti-cloud-upload" style="font-size:40px;color:var(--purple2);"></i>
+                <h3 style="margin-top:10px;">Analizar Archivos Reales</h3>
+                <p style="font-size:12px; color:var(--txt3);">Suba PDFs o Imágenes para extraer datos automáticamente.</p>
+                <input type="file" id="file-inp" hidden multiple onchange="analizar(this.files)">
             </div>
-            <div id="file-list" style="margin-top:20px;"></div>
+            <div id="file-list" style="margin-top:15px;"></div>
         </div>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-    // URL DE TU GOOGLE SCRIPT (CONECTADA)
+    // CAMBIA ESTO POR TU URL DE GOOGLE APPS SCRIPT ACTUALIZADA
     const GS_URL = "https://script.google.com/macros/s/AKfycbzOtIoI-3ptjVRBIYTulGnc03sLLgrcYk3BKw9Zwp0T-lG67QiKwXNNHcqR9FpeJHIb/exec";
     
     let historial = [];
     let currentId = null;
-    let syncTimer;
+    let timer;
 
-    // --- FUNCIONES CORE ---
-
-    function capturarDatos() {
-        const fileCards = document.querySelectorAll('#file-list .file-card span');
-        const fileNames = Array.from(fileCards).map(s => s.textContent.trim());
+    function capturar() {
+        const fileNames = Array.from(document.querySelectorAll('#file-list .file-card span')).map(s => s.textContent);
+        // Generar un número de ítem basado en la posición del historial
+        const itemFactura = currentId ? (historial.findIndex(h => h.id === currentId) + 1) : (historial.length + 1);
 
         return {
             id: currentId,
             orden: document.getElementById('inp-orden').value,
             factura: document.getElementById('inp-factura').value,
+            itemFactura: itemFactura,
+            fFactura: document.getElementById('inp-f-factura').value,
             fOferta: document.getElementById('inp-f-oferta').value,
             fFijacion: document.getElementById('inp-f-fijacion').value,
-            fFactura: document.getElementById('inp-f-factura').value,
             ny: document.getElementById('inp-ny').value,
             trm: document.getElementById('inp-trm').value,
             dif: document.getElementById('inp-dif').value,
-            ret: document.getElementById('inp-ret').value,
             total: document.getElementById('inp-v-total').value,
+            ret: document.getElementById('inp-ret').value,
             pagar: document.getElementById('inp-v-pagar').value,
             estado: document.getElementById('inp-estado-final').value,
-            docs: document.getElementById('stat-docs').textContent,
             fileNames: fileNames,
             bancos: [
                 { ent: document.getElementById('b1-ent').value, fec: document.getElementById('b1-fec').value },
@@ -252,218 +197,131 @@
         };
     }
 
-    async function syncCloud(action = "SAVE", dataOverride = null) {
-        const data = dataOverride || capturarDatos();
+    async function sync(action = "SAVE", override = null) {
+        const data = override || capturar();
         data.action = action;
-        
-        const badge = document.getElementById('sync-status');
-        badge.textContent = "Sincronizando...";
-        badge.className = "badge-sync sync-wait";
-
+        document.getElementById('sync-label').textContent = "SINCRONIZANDO...";
         try {
-            await fetch(GS_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify(data)
-            });
-            badge.textContent = "Sincronizado";
-            badge.className = "badge-sync sync-ok";
+            await fetch(GS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+            document.getElementById('sync-label').textContent = "SINCRONIZADO EN NUBE";
         } catch (e) {
-            badge.textContent = "Error Sincro";
-            badge.style.color = "var(--red)";
+            document.getElementById('sync-label').textContent = "ERROR CONEXIÓN";
         }
     }
 
-    function autoSync() {
+    function autoSave() {
         if(!currentId) return;
-        // Actualizar localmente el historial en memoria
         const index = historial.findIndex(h => h.id === currentId);
-        if(index > -1) {
-            historial[index] = capturarDatos();
-            renderHistorial();
-        }
-        // Debounce para no saturar la red
-        clearTimeout(syncTimer);
-        syncTimer = setTimeout(() => syncCloud("SAVE"), 1200);
+        if(index > -1) { historial[index] = capturar(); renderHist(); }
+        clearTimeout(timer);
+        timer = setTimeout(() => sync("SAVE"), 1500);
     }
 
-    // --- ANALISIS Y SIMULACIÓN ---
-
-    function iniciarAnalisis(files) {
+    function analizar(files) {
         if(!files.length) return;
-        const pBar = document.getElementById('p-bar');
-        const pFill = document.getElementById('p-fill');
-        pBar.style.display = 'block';
-        
-        let p = 0;
-        const interval = setInterval(() => {
-            p += 10;
-            pFill.style.width = p + '%';
-            if(p >= 100) {
-                clearInterval(interval);
-                pBar.style.display = 'none';
-                pFill.style.width = '0%';
-                ejecutarSimulacionReal(files);
-            }
-        }, 80);
-    }
-
-    function ejecutarSimulacionReal(files) {
         currentId = Date.now();
-        const n = files.length;
-        
-        // Generar lista de facturas basada en la cantidad de archivos
-        let invoiceList = [];
-        for(let i=0; i < Math.min(n, 4); i++) {
-            invoiceList.push(`CMAA-${Math.floor(Math.random()*800 + 100)}`);
-        }
-
-        const baseVal = Math.floor(Math.random() * 400000000 + 300000000);
-        const retVal = Math.floor(baseVal * 0.0025);
-
-        // Llenar UI con datos coherentes
-        document.getElementById('inp-orden').value = `PER-${Math.floor(Math.random()*5000 + 1000)}-2025`;
-        document.getElementById('inp-factura').value = invoiceList.join(", ");
-        document.getElementById('inp-f-oferta').value = "25/03/2025";
-        document.getElementById('inp-f-fijacion').value = "25/03/2025";
-        document.getElementById('inp-ny').value = (Math.random() * (410 - 380) + 380).toFixed(2);
-        document.getElementById('inp-trm').value = Math.floor(Math.random()*200 + 4000);
-        document.getElementById('inp-dif').value = "-35";
-        document.getElementById('inp-ret').value = retVal;
-        document.getElementById('inp-f-factura').value = "31/03/2025";
-        document.getElementById('inp-v-total').value = baseVal;
-        document.getElementById('inp-v-pagar').value = baseVal - retVal - Math.floor(Math.random()*1000000);
-        document.getElementById('inp-estado-final').value = "VALIDADO";
-
-        // Bancos
-        const bancosRefs = ["DAVIVIENDA", "BANCOLOMBIA", "BANCO AGRARIO"];
-        bancosRefs.forEach((b, i) => {
-            document.getElementById(`b${i+1}-ent`).value = b;
-            document.getElementById(`b${i+1}-fec`).value = `${10 + i}/04/2025`;
-        });
-
-        // Mostrar lista de archivos
         const list = document.getElementById('file-list');
         list.innerHTML = '';
+        
+        let facturasExtraidas = [];
+        let ordenExtraida = "";
+
         Array.from(files).forEach(f => {
+            const name = f.name.toUpperCase();
+            // Extracción inteligente real de nombres
+            const mOrden = name.match(/PER-[\d-]+/); if(mOrden) ordenExtraida = mOrden[0];
+            const mFac = name.match(/CHA-[\d-]+|CMAA-[\d-]+/); if(mFac) facturasExtraidas.push(mFac[0]);
+
             const div = document.createElement('div');
             div.className = 'file-card';
             div.innerHTML = `<i class="ti ti-file-check" style="color:var(--green)"></i> <span>${f.name}</span>`;
             list.appendChild(div);
         });
 
-        document.getElementById('stat-docs').textContent = n;
-        document.getElementById('label-proceso').textContent = `PROCESO: ${document.getElementById('inp-orden').value}`;
-        document.getElementById('stat-estado').textContent = "ANALIZADO IA";
+        // Limpiar para datos nuevos
+        document.querySelectorAll('input').forEach(i => i.value = '');
+        
+        document.getElementById('inp-orden').value = ordenExtraida;
+        document.getElementById('inp-factura').value = facturasExtraidas.join(", ");
+        document.getElementById('label-proceso').textContent = `PROCESO: ${ordenExtraida}`;
+        document.getElementById('stat-docs').textContent = files.length;
+        document.getElementById('stat-estado').textContent = "ANALIZADO";
 
-        updateKPI();
-        const data = capturarDatos();
+        const data = capturar();
         historial.unshift(data);
-        renderHistorial();
-        syncCloud("SAVE", data);
+        renderHist();
+        sync("SAVE", data);
     }
 
-    // --- NAVEGACIÓN Y UI ---
-
-    function cargarContrato(id) {
-        const item = historial.find(h => h.id === id);
-        if(!item) return;
+    function cargar(id) {
+        const h = historial.find(x => x.id === id);
+        if(!h) return;
         currentId = id;
-
-        document.getElementById('inp-orden').value = item.orden;
-        document.getElementById('inp-factura').value = item.factura;
-        document.getElementById('inp-f-oferta').value = item.fOferta;
-        document.getElementById('inp-f-fijacion').value = item.fFijacion;
-        document.getElementById('inp-ny').value = item.ny;
-        document.getElementById('inp-trm').value = item.trm;
-        document.getElementById('inp-dif').value = item.dif;
-        document.getElementById('inp-ret').value = item.ret;
-        document.getElementById('inp-f-factura').value = item.fFactura;
-        document.getElementById('inp-v-total').value = item.total;
-        document.getElementById('inp-v-pagar').value = item.pagar;
-        document.getElementById('inp-estado-final').value = item.estado;
-        
-        item.bancos.forEach((b, i) => {
+        document.getElementById('inp-orden').value = h.orden;
+        document.getElementById('inp-factura').value = h.factura;
+        document.getElementById('inp-f-oferta').value = h.fOferta;
+        document.getElementById('inp-f-fijacion').value = h.fFijacion;
+        document.getElementById('inp-ny').value = h.ny;
+        document.getElementById('inp-trm').value = h.trm;
+        document.getElementById('inp-dif').value = h.dif;
+        document.getElementById('inp-ret').value = h.ret;
+        document.getElementById('inp-f-factura').value = h.fFactura;
+        document.getElementById('inp-v-total').value = h.total;
+        document.getElementById('inp-v-pagar').value = h.pagar;
+        document.getElementById('inp-estado-final').value = h.estado;
+        h.bancos.forEach((b, i) => {
             document.getElementById(`b${i+1}-ent`).value = b.ent;
             document.getElementById(`b${i+1}-fec`).value = b.fec;
         });
-
-        const list = document.getElementById('file-list');
-        list.innerHTML = '';
-        item.fileNames.forEach(name => {
-            const div = document.createElement('div');
-            div.className = 'file-card';
-            div.innerHTML = `<i class="ti ti-file-check" style="color:var(--green)"></i> <span>${name}</span>`;
-            list.appendChild(div);
-        });
-
-        document.getElementById('stat-docs').textContent = item.docs;
-        document.getElementById('label-proceso').textContent = `PROCESO: ${item.orden}`;
-        document.getElementById('stat-estado').textContent = "RECUPERADO";
-        
+        document.getElementById('file-list').innerHTML = h.fileNames.map(n => `<div class="file-card"><i class="ti ti-file-check" style="color:var(--green)"></i> <span>${n}</span></div>`).join('');
+        document.getElementById('stat-docs').textContent = h.fileNames.length;
         updateKPI();
-        renderHistorial();
+        renderHist();
     }
 
-    function renderHistorial() {
-        const container = document.getElementById('historial-container');
-        if(!historial.length) {
-            container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--txt3); font-size:11px;">No hay registros previos</div>';
-            return;
-        }
-        container.innerHTML = '';
-        historial.forEach(item => {
+    function renderHist() {
+        const c = document.getElementById('historial-container');
+        c.innerHTML = historial.length ? '' : '<div style="padding:20px; font-size:11px; color:var(--txt3); text-align:center;">Sin registros</div>';
+        historial.forEach(h => {
             const div = document.createElement('div');
-            div.className = `history-item ${currentId === item.id ? 'active' : ''}`;
-            div.onclick = () => cargarContrato(item.id);
-            div.innerHTML = `
-                <span class="h-name">${item.orden || 'Sin Orden'}</span>
-                <div class="h-meta">
-                    <span>${item.factura.substring(0,20)}${item.factura.length > 20 ? '...' : ''}</span>
-                    <span>$${Number(item.total).toLocaleString()}</span>
-                </div>
-            `;
-            container.appendChild(div);
+            div.className = `history-item ${currentId === h.id ? 'active' : ''}`;
+            div.onclick = () => cargar(h.id);
+            div.innerHTML = `<span class="h-name">${h.orden || 'Analizando...'}</span>
+                <div class="h-meta"><span>Fac: ${h.factura}</span><span>$${Number(h.total).toLocaleString()}</span></div>`;
+            c.appendChild(div);
         });
+    }
+
+    function resetForm() {
+        currentId = null;
+        document.querySelectorAll('input').forEach(i => i.value = '');
+        document.getElementById('file-list').innerHTML = '';
+        document.getElementById('stat-docs').textContent = '0';
+        updateKPI();
     }
 
     function updateKPI() {
-        const total = document.getElementById('inp-v-total').value;
-        const pagar = document.getElementById('inp-v-pagar').value;
-        const fPago = document.getElementById('b3-fec').value;
-        document.getElementById('stat-val').textContent = total ? '$' + Number(total).toLocaleString() : '$0';
-        document.getElementById('stat-pay').textContent = pagar ? '$' + Number(pagar).toLocaleString() : '$0';
-        document.getElementById('stat-pago').textContent = fPago || '--/--/----';
-    }
-
-    function resetFormParaNuevo() {
-        currentId = null;
-        document.querySelectorAll('input').forEach(i => i.value = '');
-        document.getElementById('stat-docs').textContent = '0';
-        document.getElementById('label-proceso').textContent = 'MODO: NUEVO ANÁLISIS';
-        document.getElementById('stat-estado').textContent = 'Sin Datos';
-        document.getElementById('file-list').innerHTML = '';
-        updateKPI();
-        renderHistorial();
+        const t = document.getElementById('inp-v-total').value;
+        const p = document.getElementById('inp-v-pagar').value;
+        document.getElementById('stat-val').textContent = t ? '$' + Number(t).toLocaleString() : '$0';
+        document.getElementById('stat-pay').textContent = p ? '$' + Number(p).toLocaleString() : '$0';
+        document.getElementById('stat-pago').textContent = document.getElementById('b3-fec').value || '--/--/--';
     }
 
     async function borrarTodo() {
-        if(confirm("¿Estás totalmente seguro? Esto borrará el historial del Dashboard y TODAS las filas en Google Sheets.")) {
-            for(let item of historial) {
-                await syncCloud("DELETE", {id: item.id});
-            }
-            historial = [];
-            resetFormParaNuevo();
+        if(confirm("¿Eliminar todo del Dashboard y de Google Sheets?")){
+            for(let h of historial) await sync("DELETE", {id: h.id});
+            historial = []; resetForm(); renderHist();
         }
     }
 
     function exportExcel() {
-        const d = capturarDatos();
-        if(!d.orden) return alert("No hay datos para exportar. Realice un análisis primero.");
+        const d = capturar();
+        if(!d.orden) return alert("Sin datos");
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet([d]);
-        XLSX.utils.book_append_sheet(wb, ws, "Reporte Gerencial");
-        XLSX.writeFile(wb, `Analisis_Gerencia_${d.orden}.xlsx`);
+        XLSX.utils.book_append_sheet(wb, ws, "Resumen");
+        XLSX.writeFile(wb, `Reporte_Doc_${d.orden}.xlsx`);
     }
 </script>
 </body>
